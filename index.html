@@ -3,30 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEUROHUB | Kour.io</title>
+    <title>NEUROHUB | Kour.io Premium</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;900&family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+    
     <style>
-        :root { --primary: #00f2ff; --secondary: #ff007f; --bg: #010101; --glass: rgba(255, 255, 255, 0.03); }
-        * { box-sizing: border-box; }
-        body, html { margin: 0; padding: 0; background: var(--bg); color: #fff; font-family: 'Inter', sans-serif; height: 100vh; overflow: hidden; }
-        #starfield { position: fixed; inset: 0; z-index: -1; }
-        
-        /* AUTH UI */
-        #auth-gate { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; align-items: center; justify-content: center; }
-        .auth-box { background: #080808; border: 2px solid var(--primary); padding: 40px; border-radius: 20px; width: 400px; text-align: center; box-shadow: 0 0 20px var(--primary); }
-        input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 15px; color: white; border-radius: 10px; margin-bottom: 15px; outline: none; }
-        input:focus { border-color: var(--primary); }
-        
-        .btn { background: var(--primary); color: #000; font-family: 'Orbitron'; font-weight: 900; padding: 15px; border-radius: 100px; border: none; cursor: pointer; width: 100%; transition: 0.3s; margin-top: 10px; }
-        .btn:hover { transform: scale(1.05); box-shadow: 0 0 20px var(--primary); }
-        .toggle-link { color: var(--primary); cursor: pointer; font-size: 0.8rem; text-decoration: underline; margin-top: 15px; display: block; }
+        :root {
+            --primary: #00f2ff;
+            --secondary: #ff007f;
+            --bg: #010101;
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.1);
+            --neon-glow: 0 0 15px rgba(0, 242, 255, 0.4);
+        }
 
-        /* MAIN UI */
-        #main-ui { display: none; height: 100vh; padding: 40px; flex-direction: column; align-items: center; animation: slideUp 1s ease; }
-        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        h1 { font-family: 'Orbitron'; font-size: 3.5rem; letter-spacing: 10px; background: linear-gradient(to right, #fff, var(--primary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        * { box-sizing: border-box; }
+        body, html {
+            margin: 0; padding: 0;
+            background: var(--bg);
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            height: 100vh; overflow: hidden;
+        }
+
+        #starfield { position: fixed; inset: 0; z-index: -1; }
+
+        /* --- AUTHENTICATION GATE --- */
+        #auth-gate {
+            position: fixed; inset: 0; background: #000;
+            z-index: 10000; display: flex; align-items: center; justify-content: center;
+        }
+        .auth-box {
+            background: #080808; border: 2px solid var(--primary);
+            padding: 40px; border-radius: 20px; width: 400px;
+            text-align: center; box-shadow: var(--neon-glow);
+        }
+        input, textarea {
+            width: 100%; background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border); padding: 12px;
+            color: white; border-radius: 10px; margin-bottom: 12px; outline: none;
+        }
+        input:focus { border-color: var(--primary); }
+
+        /* --- MAIN HUB LAYOUT --- */
+        #main-ui {
+            display: none; height: 100vh; padding: 20px;
+            grid-template-columns: 300px 1fr 300px;
+            grid-template-rows: auto 1fr;
+            gap: 20px;
+            animation: slideUp 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+        header { grid-column: span 3; text-align: center; padding: 10px; }
+        h1 { font-family: 'Orbitron'; letter-spacing: 10px; margin: 0; background: linear-gradient(to right, #fff, var(--primary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 2.5rem; }
+
+        .panel {
+            background: var(--glass); backdrop-filter: blur(15px);
+            border: 1px solid var(--border); border-radius: 20px;
+            padding: 20px; display: flex; flex-direction: column;
+        }
+
+        .btn {
+            background: var(--primary); color: #000;
+            font-family: 'Orbitron'; font-weight: 900;
+            padding: 12px; border-radius: 50px; border: none;
+            cursor: pointer; transition: 0.3s; width: 100%;
+        }
+        .btn:hover { transform: scale(1.03); box-shadow: var(--neon-glow); }
+
+        /* --- CHAT SYSTEM --- */
+        #chat-container { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+        .msg { background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 10px; font-size: 0.85rem; }
+        .msg.owner { border-left: 3px solid var(--secondary); color: var(--secondary); }
+
+        /* --- TICKET SYSTEM --- */
+        #ticket-list { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .ticket-card { background: rgba(0,0,0,0.4); border: 1px solid var(--border); padding: 10px; border-radius: 10px; font-size: 0.8rem; }
+
+        /* --- ADMIN PANEL --- */
+        #admin-panel { display: none; background: rgba(255, 0, 127, 0.1); border: 1px solid var(--secondary); }
+
     </style>
 </head>
 <body>
@@ -38,19 +96,57 @@
         <h2 id="auth-title" style="font-family: 'Orbitron'; color: var(--primary);">NEURO LOGIN</h2>
         <input type="text" id="username" placeholder="Username">
         <input type="password" id="password" placeholder="Password">
-        <button id="auth-btn" class="btn" onclick="handleAuth()">LOGIN</button>
-        <span id="toggle-text" class="toggle-link" onclick="toggleAuthMode()">Don't have an account? Sign Up</span>
-        <p id="auth-msg" style="font-size: 0.8rem; color: #ff4444; margin-top: 10px;"></p>
+        <button class="btn" onclick="handleAuth()">CONTINUE</button>
+        <p onclick="toggleAuth()" style="color:var(--primary); cursor:pointer; font-size:0.75rem; margin-top:15px;">Toggle Login/Sign-Up</p>
+        <p id="auth-msg" style="color:red; font-size:0.8rem;"></p>
     </div>
 </div>
 
 <div id="main-ui">
-    <h1>NEUROHUB</h1>
-    <p style="color: var(--primary);">WELCOME BACK, <span id="user-display"></span></p>
-    <a href="chrome-extension://dhdgffkkebhmkfjojejmpbldmpobfkfo/options.html#nav=b61323f3-d211-4a7d-a58e-8b199d2549d1+editor" class="btn" style="width: auto; padding: 20px 60px;">INSTALL SCRIPT</a>
+    <header>
+        <h1>NEUROHUB</h1>
+        <p style="font-family:'Orbitron'; color:var(--primary); font-size:0.7rem;">KOUR.IO INTERNAL | STATUS: <span style="color:#00ff88">UNDETECTED</span></p>
+    </header>
+
+    <div class="panel">
+        <h3 style="font-family:'Orbitron'; font-size:0.9rem;">MODULES</h3>
+        <div style="flex-grow:1;">
+            <p>● AIMBOT</p>
+            <p>● ESP (2D/3D)</p>
+            <p>● SILENT AIM</p>
+            <p>● SPEED HACK</p>
+        </div>
+        <a href="chrome-extension://dhdgffkkebhmkfjojejmpbldmpobfkfo/options.html#nav=b61323f3-d211-4a7d-a58e-8b199d2549d1+editor" class="btn">INSTALL V1</a>
+    </div>
+
+    <div class="panel">
+        <h3 style="font-family:'Orbitron'; font-size:0.9rem;">24H GLOBAL CHAT</h3>
+        <div id="chat-container"></div>
+        <div style="display:flex; gap:10px;">
+            <input type="text" id="chatInput" placeholder="Send transmission..." style="margin:0;">
+            <button class="btn" style="width:80px;" onclick="sendMsg()">SEND</button>
+        </div>
+    </div>
+
+    <div class="panel" id="support-side">
+        <h3 style="font-family:'Orbitron'; font-size:0.9rem;">SUPPORT</h3>
+        <div id="ticket-list"></div>
+        <div id="user-ticket-form">
+            <input type="text" id="t-subject" placeholder="Subject">
+            <textarea id="t-body" placeholder="Issue..." rows="2"></textarea>
+            <button class="btn" onclick="fileTicket()">FILE TICKET</button>
+        </div>
+    </div>
+
+    <div class="panel" id="admin-panel" style="grid-column: span 3; margin-top:10px;">
+        <h3 style="font-family:'Orbitron'; color:var(--secondary);">ADMIN COMMAND CENTER</h3>
+        <p>Logged in as: NEURO(OWNER)</p>
+        <button class="btn" style="background:var(--secondary); width:200px;" onclick="clearChat()">CLEAR GLOBAL CHAT</button>
+    </div>
 </div>
 
 <script>
+    // --- FIREBASE CONFIG ---
     const firebaseConfig = {
         apiKey: "AIzaSyC-tWfooosC689hzDUC4S5CXL7dJ3yANuc",
         authDomain: "neuro-chat-8fe18.firebaseapp.com",
@@ -63,66 +159,96 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
+    let currentUser = "";
+    let isOwner = false;
     let isSignUp = false;
 
-    function toggleAuthMode() {
+    function toggleAuth() {
         isSignUp = !isSignUp;
         document.getElementById('auth-title').innerText = isSignUp ? "NEURO SIGN UP" : "NEURO LOGIN";
-        document.getElementById('auth-btn').innerText = isSignUp ? "CREATE ACCOUNT" : "LOGIN";
-        document.getElementById('toggle-text').innerText = isSignUp ? "Already have an account? Login" : "Don't have an account? Sign Up";
     }
 
     async function handleAuth() {
-        const user = document.getElementById('username').value.trim();
-        const pass = document.getElementById('password').value.trim();
-        const msg = document.getElementById('auth-msg');
+        const u = document.getElementById('username').value.trim();
+        const p = document.getElementById('password').value.trim();
+        if(!u || !p) return;
 
-        if(!user || !pass) return;
-
-        // Owner Hardcode
-        if(user === "neuro(owner)" && pass === "admin") {
-            enterHub(user);
+        if(u === "neuro(owner)" && p === "admin") {
+            isOwner = true;
+            enterHub(u);
             return;
         }
 
-        const userRef = db.ref('users/' + user);
+        const userRef = db.ref('users/' + u);
+        const snap = await userRef.once('value');
 
         if(isSignUp) {
-            // Check if user exists
-            const snapshot = await userRef.once('value');
-            if(snapshot.exists()) {
-                msg.innerText = "Username already taken!";
-            } else {
-                await userRef.set({ password: pass });
-                enterHub(user);
-            }
+            if(snap.exists()) { alert("Username Taken"); }
+            else { await userRef.set({ pass: p }); enterHub(u); }
         } else {
-            // Login check
-            const snapshot = await userRef.once('value');
-            if(snapshot.exists() && snapshot.val().password === pass) {
-                enterHub(user);
-            } else {
-                msg.innerText = "Invalid username or password!";
-            }
+            if(snap.exists() && snap.val().pass === p) { enterHub(u); }
+            else { alert("Invalid Login"); }
         }
     }
 
-    function enterHub(username) {
+    function enterHub(name) {
+        currentUser = name;
         document.getElementById('auth-gate').style.display = 'none';
-        document.getElementById('main-ui').style.display = 'flex';
-        document.getElementById('user-display').innerText = username.toUpperCase();
+        document.getElementById('main-ui').style.display = 'grid';
+        if(isOwner) document.getElementById('admin-panel').style.display = 'block';
+        
+        // Listeners
+        db.ref('messages').limitToLast(15).on('child_added', s => {
+            const d = s.val();
+            const m = document.createElement('div');
+            m.className = `msg ${d.owner ? 'owner' : ''}`;
+            m.innerHTML = `<strong>${d.user}:</strong> ${d.text}`;
+            document.getElementById('chat-container').appendChild(m);
+            document.getElementById('chat-container').scrollTop = 9999;
+        });
+
+        db.ref('tickets').on('value', s => {
+            const list = document.getElementById('ticket-list');
+            list.innerHTML = "";
+            s.forEach(child => {
+                const t = child.val();
+                if(!isOwner && t.user !== currentUser) return;
+                const div = document.createElement('div');
+                div.className = "ticket-card";
+                div.innerHTML = `<strong>${t.sub}</strong><br>${t.body}<br><small>From: ${t.user}</small>`;
+                list.appendChild(div);
+            });
+        });
     }
 
-    // Starfield Animation
+    function sendMsg() {
+        const text = document.getElementById('chatInput').value;
+        if(!text) return;
+        db.ref('messages').push().set({ user: currentUser, text, owner: isOwner });
+        document.getElementById('chatInput').value = "";
+    }
+
+    function fileTicket() {
+        const sub = document.getElementById('t-subject').value;
+        const body = document.getElementById('t-body').value;
+        if(!sub || !body) return;
+        db.ref('tickets').push().set({ user: currentUser, sub, body });
+        document.getElementById('t-subject').value = "";
+        document.getElementById('t-body').value = "";
+    }
+
+    function clearChat() { if(isOwner) db.ref('messages').remove(); }
+
+    // Falling Stars
     const canvas = document.getElementById('starfield');
     const ctx = canvas.getContext('2d');
     let stars = [];
     function init() {
         canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-        for(let i=0; i<100; i++) stars.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, s: Math.random()*4+2, l: Math.random()*20+5});
+        for(let i=0; i<80; i++) stars.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, s:Math.random()*5+2, l:Math.random()*15+5});
     }
     function draw() {
-        ctx.clearRect(0,0,canvas.width, canvas.height); ctx.strokeStyle = "#00f2ff44"; ctx.lineWidth = 2;
+        ctx.clearRect(0,0,canvas.width, canvas.height); ctx.strokeStyle = "#00f2ff44"; ctx.lineWidth=2;
         stars.forEach(s => { ctx.beginPath(); ctx.moveTo(s.x, s.y); ctx.lineTo(s.x, s.y+s.l); ctx.stroke(); s.y += s.s; if(s.y > canvas.height) s.y = -20; });
         requestAnimationFrame(draw);
     }
