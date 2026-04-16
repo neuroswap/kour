@@ -1,243 +1,317 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kour.io | Neural Hub</title>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;500&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #00f2ff;
-            --bg: #050505;
-            --glass: rgba(255, 255, 255, 0.05);
-            --border: rgba(255, 255, 255, 0.1);
-        }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Kour.io Hub</title>
 
-        body, html {
-            margin: 0;
-            padding: 0;
-            background: var(--bg);
-            color: white;
-            font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
-            height: 100%;
-        }
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,system-ui}
+body{
+  background:#05060a;
+  color:#fff;
+  overflow:hidden;
+}
 
-        #starfield {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-        }
+/* STARFIELD */
+canvas{
+  position:fixed;
+  top:0;left:0;
+  width:100%;height:100%;
+  z-index:-1;
+}
 
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 40px 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 30px;
-        }
+/* TOP NAV */
+.nav{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:15px 25px;
+  background:rgba(255,255,255,0.03);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(0,255,255,0.1);
+}
 
-        header {
-            text-align: center;
-            padding: 40px 0;
-        }
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-weight:bold;
+  color:#00e5ff;
+}
 
-        h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 3rem;
-            letter-spacing: 5px;
-            color: var(--primary);
-            text-shadow: 0 0 20px rgba(0, 242, 255, 0.5);
-            margin: 0;
-        }
+.tabs{
+  display:flex;
+  gap:10px;
+}
 
-        .status-badge {
-            display: inline-block;
-            background: rgba(0, 255, 136, 0.1);
-            color: #00ff88;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            border: 1px solid #00ff88;
-            margin-top: 10px;
-            text-transform: uppercase;
-        }
+.tab{
+  padding:8px 12px;
+  border-radius:10px;
+  cursor:pointer;
+  font-size:13px;
+  opacity:0.7;
+  transition:0.2s;
+  border:1px solid transparent;
+}
+.tab:hover{
+  opacity:1;
+  border:1px solid rgba(0,255,255,0.2);
+}
+.tab.active{
+  opacity:1;
+  background:rgba(0,229,255,0.1);
+  border:1px solid rgba(0,229,255,0.4);
+}
 
-        /* Glass Cards */
-        .card {
-            background: var(--glass);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--border);
-            border-radius: 15px;
-            padding: 25px;
-        }
+/* LAYOUT */
+.container{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:calc(100vh - 60px);
+}
 
-        /* Script Section */
-        .script-box {
-            text-align: center;
-            background: linear-gradient(135deg, rgba(0, 242, 255, 0.1), transparent);
-        }
+.card{
+  width:420px;
+  padding:20px;
+  border-radius:18px;
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(0,255,255,0.15);
+  backdrop-filter:blur(16px);
+  box-shadow:0 0 30px rgba(0,229,255,0.08);
+}
 
-        .btn {
-            background: var(--primary);
-            color: black;
-            padding: 15px 35px;
-            border: none;
-            border-radius: 8px;
-            font-family: 'Orbitron', sans-serif;
-            font-weight: bold;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-            transition: 0.3s;
-            margin-top: 15px;
-        }
+/* ICON */
+.iconWrap{
+  display:flex;
+  align-items:center;
+  gap:15px;
+}
 
-        .btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 25px var(--primary);
-        }
+#icon{
+  width:60px;
+  height:60px;
+  border-radius:14px;
+  background:rgba(0,0,0,0.4);
+}
 
-        /* Chat Section */
-        #chat-container {
-            height: 400px;
-            display: flex;
-            flex-direction: column;
-        }
+/* STATUS */
+.status{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-top:10px;
+  font-size:13px;
+}
+.dot{
+  width:10px;height:10px;
+  background:#00ff88;
+  border-radius:50%;
+  box-shadow:0 0 10px #00ff88;
+  animation:pulse 1.5s infinite;
+}
+@keyframes pulse{
+  0%{transform:scale(1);opacity:1}
+  50%{transform:scale(1.4);opacity:0.6}
+  100%{transform:scale(1);opacity:1}
+}
 
-        #messages {
-            flex-grow: 1;
-            overflow-y: auto;
-            padding: 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            border-bottom: 1px solid var(--border);
-        }
+/* FEATURES */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+  margin-top:15px;
+}
+.feature{
+  padding:10px;
+  border-radius:12px;
+  background:rgba(0,0,0,0.3);
+  border:1px solid rgba(0,255,255,0.1);
+  font-size:12px;
+  text-align:center;
+}
 
-        .msg {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 8px 15px;
-            border-radius: 8px;
-            width: fit-content;
-            max-width: 80%;
-            font-size: 0.9rem;
-        }
+/* SUPPORT */
+textarea, input{
+  width:100%;
+  margin-top:10px;
+  padding:10px;
+  border-radius:10px;
+  border:none;
+  outline:none;
+  background:rgba(255,255,255,0.08);
+  color:white;
+}
 
-        .chat-input-area {
-            display: flex;
-            gap: 10px;
-            padding-top: 15px;
-        }
+button{
+  width:100%;
+  margin-top:10px;
+  padding:10px;
+  border-radius:10px;
+  border:none;
+  cursor:pointer;
+  background:linear-gradient(90deg,#00e5ff,#7c4dff);
+  color:white;
+  font-weight:bold;
+}
 
-        input {
-            flex-grow: 1;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--border);
-            padding: 10px;
-            color: white;
-            border-radius: 5px;
-        }
-    </style>
+/* PAGE SWITCH */
+.page{display:none}
+.page.active{display:block}
+</style>
 </head>
+
 <body>
 
-<canvas id="starfield"></canvas>
+<canvas id="bg"></canvas>
+
+<div class="nav">
+  <div class="brand">
+    <div id="miniIcon"></div>
+    Kour.io Hub
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="showTab('home')">Home</div>
+    <div class="tab" onclick="showTab('tools')">Tools</div>
+    <div class="tab" onclick="showTab('support')">Support</div>
+  </div>
+</div>
 
 <div class="container">
-    <header>
-        <h1>NEURAL HUB</h1>
-        <div class="status-badge">● Undetected</div>
-    </header>
 
-    <div class="card script-box">
-        <h2>Kour.io V3 Script</h2>
-        <p>Advanced Aimbot, ESP, and Movement Mods.</p>
-        <a href="chrome-extension://dhdgffkkebhmkfjojejmpbldmpobfkfo/options.html#nav=b61323f3-d211-4a7d-a58e-8b199d2549d1+editor" class="btn">INSTALL SCRIPT</a>
-    </div>
-
-    <div class="card" id="chat-container">
-        <h3>Global Live Chat</h3>
-        <div id="messages"></div>
-        <div class="chat-input-area">
-            <input type="text" id="username" placeholder="Username" style="width: 100px; flex-grow: 0;">
-            <input type="text" id="messageInput" placeholder="Type a message...">
-            <button class="btn" style="margin:0; padding: 10px 20px;" onclick="sendMessage()">Send</button>
+<!-- HOME -->
+<div id="home" class="page active">
+  <div class="card">
+    <div class="iconWrap">
+      <canvas id="icon"></canvas>
+      <div>
+        <h2 style="color:#00e5ff">Dashboard</h2>
+        <div class="status">
+          <div class="dot"></div>
+          System Online
         </div>
+      </div>
     </div>
+  </div>
+</div>
+
+<!-- TOOLS -->
+<div id="tools" class="page">
+  <div class="card">
+    <h2 style="color:#00e5ff">Tools</h2>
+
+    <div class="grid">
+      <div class="feature">🎯 Aim Trainer</div>
+      <div class="feature">🧠 Reaction Lab</div>
+      <div class="feature">🚀 Movement Drill</div>
+      <div class="feature">📊 Stats Panel</div>
+    </div>
+  </div>
+</div>
+
+<!-- SUPPORT -->
+<div id="support" class="page">
+  <div class="card">
+    <h2 style="color:#00e5ff">Support</h2>
+
+    <input placeholder="Your name"/>
+    <textarea rows="5" placeholder="Describe your issue..."></textarea>
+    <button onclick="sendSupport()">Send Ticket</button>
+  </div>
+</div>
+
 </div>
 
 <script>
-    // 1. STARFIELD ANIMATION
-    const canvas = document.getElementById('starfield');
-    const ctx = canvas.getContext('2d');
-    let stars = [];
+/* TAB SYSTEM */
+function showTab(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
 
-    function resize() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    }
-    window.onresize = resize;
-    resize();
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
 
-    for(let i=0; i<200; i++) {
-        stars.push({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
-            size: Math.random() * 2,
-            speed: Math.random() * 0.5
-        });
-    }
+/* SUPPORT FAKE SUBMIT */
+function sendSupport(){
+  alert("Support ticket sent (demo)");
+}
 
-    function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = "white";
-        stars.forEach(s => {
-            ctx.beginPath();
-            ctx.arc(s.x, s.y, s.size, 0, Math.PI*2);
-            ctx.fill();
-            s.y += s.speed;
-            if(s.y > canvas.height) s.y = 0;
-        });
-        requestAnimationFrame(animate);
-    }
-    animate();
+/* PROCEDURAL ICON (NEON IDENTITY) */
+function drawIcon(canvas){
+  const ctx = canvas.getContext("2d");
+  const size = canvas.width = canvas.height = 60;
 
-    // 2. FIREBASE LOGIC
-    const firebaseConfig = {
-        apiKey: "AIzaSy...",
-        databaseURL: "https://neuro-chat-8fe18-default-rtdb.firebaseio.com"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+  const seed = Math.random()*9999;
 
-    function sendMessage() {
-        const user = document.getElementById('username').value || "Guest";
-        const text = document.getElementById('messageInput').value;
-        if(text) {
-            db.ref('messages').push().set({
-                username: user,
-                message: text,
-                timestamp: Date.now()
-            });
-            document.getElementById('messageInput').value = "";
-        }
-    }
+  ctx.clearRect(0,0,size,size);
 
-    db.ref('messages').limitToLast(20).on('child_added', (snapshot) => {
-        const data = snapshot.val();
-        const msgDiv = document.createElement('div');
-        msgDiv.className = 'msg';
-        msgDiv.innerHTML = `<strong>${data.username}:</strong> ${data.message}`;
-        document.getElementById('messages').appendChild(msgDiv);
-        document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
-    });
+  for(let i=0;i<6;i++){
+    ctx.fillStyle = `hsl(${(seed+i*40)%360},100%,60%)`;
+    ctx.beginPath();
+    ctx.arc(
+      Math.random()*size,
+      Math.random()*size,
+      Math.random()*10+3,
+      0,Math.PI*2
+    );
+    ctx.fill();
+  }
+}
+
+/* INIT ICONS */
+drawIcon(document.getElementById("icon"));
+drawIcon(document.getElementById("miniIcon"));
+
+/* STARFIELD */
+const canvas = document.getElementById("bg");
+const ctx = canvas.getContext("2d");
+
+let w,h,stars=[];
+let mx=0,my=0;
+
+function init(){
+  w=canvas.width=innerWidth;
+  h=canvas.height=innerHeight;
+
+  stars = Array.from({length:180},()=>({
+    x:Math.random()*w,
+    y:Math.random()*h,
+    z:Math.random()*2
+  }));
+}
+
+document.addEventListener("mousemove",(e)=>{
+  mx=(e.clientX-w/2)*0.0005;
+  my=(e.clientY-h/2)*0.0005;
+});
+
+function animate(){
+  ctx.fillStyle="#05060a";
+  ctx.fillRect(0,0,w,h);
+
+  for(let s of stars){
+    s.x+=mx*s.z*5;
+    s.y+=my*s.z*5;
+
+    if(s.x<0)s.x=w;
+    if(s.x>w)s.x=0;
+    if(s.y<0)s.y=h;
+    if(s.y>h)s.y=0;
+
+    ctx.fillStyle="#00e5ff";
+    ctx.fillRect(s.x,s.y,2,2);
+  }
+
+  requestAnimationFrame(animate);
+}
+
+init();
+animate();
+window.addEventListener("resize",init);
 </script>
 
 </body>
