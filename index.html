@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEUROHUB | Product Portal</title>
+    <title>NEUROHUB | Elite Portal</title>
+    <link rel="icon" href="https://img.icons8.com/ios-filled/50/00f2ff/skull.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     
     <style>
@@ -11,174 +12,143 @@
             --primary: #00f2ff;
             --secondary: #ff007f;
             --bg-dark: #050505;
-            --panel-bg: rgba(13, 17, 23, 0.95);
-            --border: rgba(0, 242, 255, 0.25);
+            --panel-bg: rgba(13, 17, 23, 0.98);
+            --border: rgba(0, 242, 255, 0.3);
         }
 
-        /* CUSTOM CROSSHAIR CURSOR */
-        * { 
-            cursor: crosshair !important; 
-            box-sizing: border-box; 
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); 
-        }
-
+        * { cursor: crosshair !important; box-sizing: border-box; transition: 0.2s; }
         body, html { margin: 0; padding: 0; background: var(--bg-dark); color: #fff; font-family: 'Inter', sans-serif; height: 100vh; overflow: hidden; }
 
         canvas#stars { position: fixed; inset: 0; z-index: -1; background: #000; }
 
-        /* BUTTON ANIMATIONS */
-        .btn, .nav-item { position: relative; }
-        .btn:hover { 
-            transform: scale(1.05); 
-            background: var(--primary); 
-            color: #000; 
-            box-shadow: 0 0 20px var(--primary); 
+        /* ALERT SYSTEM */
+        #broadcast-bar {
+            background: rgba(255, 0, 127, 0.2);
+            border-bottom: 1px solid var(--secondary);
+            color: var(--secondary);
+            text-align: center;
+            padding: 8px;
+            font-family: 'Orbitron';
+            font-size: 0.7rem;
+            display: none;
+            letter-spacing: 2px;
         }
-        .btn:active { transform: scale(0.95); }
 
-        /* AUTHENTICATION GATE */
-        #auth-gate { position: fixed; inset: 0; z-index: 10000; display: flex; align-items: center; justify-content: center; background: #000; }
-        .auth-box { 
-            background: var(--panel-bg); 
-            border: 2px solid var(--primary); 
-            padding: 50px; 
-            border-radius: 20px; 
-            width: 420px; 
-            text-align: center; 
-            box-shadow: 0 0 50px rgba(0, 242, 255, 0.15);
-        }
-        .auth-box h2 { font-family: 'Orbitron'; color: var(--primary); margin-bottom: 30px; letter-spacing: 4px; }
-        input { 
-            width: 100%; background: #0a0a0a; border: 1px solid var(--border); 
-            padding: 15px; color: #fff; margin-bottom: 12px; border-radius: 8px; outline: none; 
-        }
-        input:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(0, 242, 255, 0.2); }
-
-        /* MAIN APP LAYOUT */
+        /* UI STRUCTURE */
         .wrapper { display: none; height: 100vh; flex-direction: column; }
-        .top-nav { 
-            height: 65px; background: rgba(0,0,0,0.9); border-bottom: 1px solid var(--border); 
-            display: flex; align-items: center; justify-content: space-between; padding: 0 30px; 
-        }
+        .top-nav { height: 60px; background: rgba(0,0,0,0.9); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 25px; }
         .main-body { display: flex; flex: 1; overflow: hidden; }
         
-        /* SIDEBAR */
-        .sidebar { 
-            width: 260px; background: rgba(5,5,5,0.95); border-right: 1px solid var(--border); 
-            padding: 30px 20px; display: flex; flex-direction: column; gap: 12px; 
-        }
-        .nav-item { 
-            padding: 14px; border-radius: 10px; font-family: 'Orbitron'; font-size: 0.8rem; 
-            color: #666; cursor: pointer; display: flex; align-items: center; gap: 15px; 
-        }
-        .nav-item:hover, .nav-item.active { color: var(--primary); background: rgba(0, 242, 255, 0.08); }
+        .sidebar { width: 250px; background: rgba(5,5,5,0.95); border-right: 1px solid var(--border); padding: 25px 15px; display: flex; flex-direction: column; gap: 8px; }
+        .nav-item { padding: 12px; border-radius: 8px; font-family: 'Orbitron'; font-size: 0.75rem; color: #555; display: flex; align-items: center; gap: 12px; }
+        .nav-item:hover, .nav-item.active { color: var(--primary); background: rgba(0, 242, 255, 0.05); }
 
-        /* CONTENT TABS */
-        .content { flex: 1; padding: 50px; overflow-y: auto; }
-        .tab-content { display: none; animation: slideIn 0.4s ease; }
-        .tab-content.active { display: block; }
-        @keyframes slideIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .content { flex: 1; padding: 40px; overflow-y: auto; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s; }
 
-        /* CARDS & GRIDS */
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin-top: 20px; }
-        .card { 
-            background: #0d1117; border: 1px solid #222; padding: 25px; border-radius: 12px; 
-            text-align: center; position: relative; overflow: hidden;
-        }
-        .card:hover { border-color: var(--primary); box-shadow: 0 0 25px rgba(0, 242, 255, 0.1); }
-        .card h3 { font-family: 'Orbitron'; color: var(--primary); margin-top: 0; }
-        .card p { font-size: 0.85rem; color: #888; margin-bottom: 20px; }
+        /* OWNER TOOLS */
+        #owner-nav { margin-top: auto; border-top: 1px solid #222; padding-top: 15px; display: none; color: var(--secondary) !important; }
+        .admin-card { background: #111; border: 1px solid var(--secondary); padding: 20px; border-radius: 10px; margin-bottom: 20px; }
 
+        /* BUTTONS */
         .btn { 
             background: transparent; border: 1px solid var(--primary); color: var(--primary); 
             padding: 12px; border-radius: 6px; font-family: 'Orbitron'; width: 100%; 
-            font-size: 0.75rem; text-decoration: none; display: inline-block;
+            display: block; text-align: center; text-decoration: none; margin-top: 10px;
         }
+        .btn:hover { background: var(--primary); color: #000; box-shadow: 0 0 15px var(--primary); transform: scale(1.02); }
+
+        /* AUTH GATE */
+        #auth-gate { position: fixed; inset: 0; z-index: 10000; background: #000; display: flex; align-items: center; justify-content: center; }
+        .auth-box { background: var(--panel-bg); border: 2px solid var(--primary); padding: 45px; border-radius: 15px; width: 400px; text-align: center; }
+        input { width: 100%; background: #0a0a0a; border: 1px solid var(--border); padding: 14px; color: #fff; margin-bottom: 12px; border-radius: 8px; outline: none; }
         
-        .welcome-hero { 
-            font-family: 'Orbitron'; font-size: 3.5rem; text-align: center; margin-top: 18vh; 
-            color: var(--primary); text-shadow: 0 0 40px rgba(0, 242, 255, 0.4); 
-        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
 <canvas id="stars"></canvas>
+<div id="broadcast-bar">SYSTEM ALERT: AUTO-INJECTION READY</div>
 
 <div id="auth-gate">
-    <div class="auth-box" id="login-box">
-        <h2>NEURO LOGIN</h2>
-        <input type="text" id="l-user" placeholder="USERNAME">
-        <input type="password" id="l-pass" placeholder="PASSWORD">
-        <button class="btn" onclick="authenticate()">ACCESS PORTAL</button>
-        <p style="font-size:0.7rem; color:#444; margin-top:20px; cursor:pointer;" onclick="toggleAuth(true)">REQUEST NEW ACCOUNT</p>
-    </div>
-
-    <div class="auth-box" id="signup-box" style="display:none;">
-        <h2>NEURO REGISTER</h2>
-        <input type="text" id="s-user" placeholder="NEW USERNAME">
-        <input type="password" id="s-pass" placeholder="NEW PASSWORD">
-        <button class="btn" onclick="authenticate()">CREATE IDENTITY</button>
-        <p style="font-size:0.7rem; color:#444; margin-top:20px; cursor:pointer;" onclick="toggleAuth(false)">RETURN TO LOGIN</p>
+    <div class="auth-box">
+        <h2 style="font-family:'Orbitron'; color:var(--primary); letter-spacing:4px;">NEUROHUB</h2>
+        <input type="text" id="user" placeholder="USERNAME">
+        <input type="password" id="pass" placeholder="PASSWORD">
+        <button class="btn" onclick="login()">AUTHORIZE IDENTITY</button>
+        <p style="font-size:0.6rem; color:#333; margin-top:15px; cursor:pointer;" onclick="toggleReg()">OR REGISTER NEW ACCOUNT</p>
     </div>
 </div>
 
-<div class="wrapper" id="main-app">
+<div class="wrapper" id="main">
     <nav class="top-nav">
-        <div style="font-family:'Orbitron'; color:var(--primary); letter-spacing:3px;">NEUROHUB PORTAL</div>
-        <div id="user-display" style="font-size:0.8rem; color:#888;">STATUS: AUTHORIZED</div>
+        <div style="font-family:'Orbitron'; color:var(--primary); letter-spacing:2px; display:flex; align-items:center; gap:10px;">
+            <img src="https://img.icons8.com/ios-filled/50/00f2ff/skull.png" width="20"> NEUROHUB ELITE
+        </div>
+        <div id="tag" style="font-size:0.75rem; color:#666;">AGENT: NULL</div>
     </nav>
 
     <div class="main-body">
         <aside class="sidebar">
-            <div class="nav-item active" onclick="switchTab('dash', this)">🏠 Dashboard</div>
-            <div class="nav-item" onclick="switchTab('store', this)">🛒 Product Store</div>
-            <div class="nav-item" onclick="switchTab('owner', this)">💎 Owner Panel</div>
-            <div class="nav-item" onclick="switchTab('events', this)">📅 Events</div>
-            <div class="nav-item" style="margin-top:auto; color:var(--secondary)" onclick="location.reload()">🚪 Terminate</div>
+            <div class="nav-item active" onclick="tab('dash', this)">🏠 Dashboard</div>
+            <div class="nav-item" onclick="tab('store', this)">🛒 Product Store</div>
+            <div class="nav-item" onclick="tab('events', this)">📅 Events</div>
+            
+            <div id="owner-nav" class="nav-item" onclick="tab('admin', this)">💎 OWNER PANEL</div>
+            
+            <div class="nav-item" style="margin-top:auto" onclick="location.reload()">🚪 Terminate</div>
         </aside>
 
         <main class="content">
             <div id="dash" class="tab-content active">
-                <h1 class="welcome-hero">WELCOME TO NEUROCHEATS!</h1>
+                <h1 style="font-family:'Orbitron'; font-size:3.5rem; text-align:center; margin-top:20vh; color:var(--primary);">WELCOME TO NEUROCHEATS!</h1>
             </div>
 
             <div id="store" class="tab-content">
-                <h2 style="font-family:'Orbitron'; border-bottom:1px solid var(--border); padding-bottom:15px;">PUBLIC PRODUCTS</h2>
-                <div class="grid">
-                    <div class="card">
+                <h2 style="font-family:'Orbitron'; border-bottom:1px solid var(--border); padding-bottom:10px;">PUBLIC STORE</h2>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+                    <div class="admin-card" style="border-color:var(--primary)">
                         <h3>V6 OPTIMIZER</h3>
-                        <p>PC Optimization utility for frame rate unlocking and system cleaning.</p>
-                        <a href="YOUR_DOWNLOAD_LINK_HERE" class="btn">DOWNLOAD .EXE</a>
+                        <p>Total PC System Optimization & FPS Unlocker.</p>
+                        <a href="https://neurohub-v1.netlify.app/downloads/NeuroHubElite.exe" class="btn">DOWNLOAD EXE</a>
                     </div>
-                    <div class="card">
-                        <h3>KOUR.IO CHEAT</h3>
-                        <p>Custom script suite for Kour.io. Includes Silent Aimbot and ESP protocols.</p>
-                        <a href="YOUR_SCRIPT_LINK_HERE" class="btn">INSTALL SCRIPT</a>
+                    <div class="admin-card" style="border-color:var(--primary)">
+                        <h3>KOUR.IO SCRIPT</h3>
+                        <p>Silent Aimbot, ESP, and Radar Integration.</p>
+                        <button class="btn" onclick="installScript()">INSTALL SCRIPT</button>
                     </div>
                 </div>
-            </div>
-
-            <div id="owner" class="tab-content">
-                <h2 style="font-family:'Orbitron'; color:var(--primary);">NEURO HUB ELITE (ADMIN)</h2>
-                <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
-                    <div class="card" style="padding:15px;">DNS Flush</div>
-                    <div class="card" style="padding:15px;">GPU Boost</div>
-                    <div class="card" style="padding:15px;">CPU Priority</div>
-                    <div class="card" style="padding:15px;">Clear Cache</div>
-                    <div class="card" style="padding:15px;">Telemetry Block</div>
-                    <div class="card" style="padding:15px;">Registry Clean</div>
-                    <div class="card" style="padding:15px;">Log Wipe</div>
-                    <div class="card" style="padding:15px;">Temp Clear</div>
-                </div>
-                <button class="btn" style="margin-top:25px;">EXECUTE ALL 40+ OPTIMIZATIONS</button>
             </div>
 
             <div id="events" class="tab-content">
-                <h2 style="font-family:'Orbitron';">GLOBAL EVENTS</h2>
-                <div style="margin-top:30px; border-left: 3px solid var(--primary); padding-left: 25px;">
-                    <p>🚀 <b>KRUNKER.IO</b> PRODUCT RELEASE - <span style="color:var(--primary)">4/19/26</span></p>
-                    <p>🔥 <b>CS2</b> PRODUCT RELEASE - <span style="color:var(--primary)">4/29/26</span></p>
+                <h2 style="font-family:'Orbitron';">UPCOMING RELEASES</h2>
+                <p>🚀 KRUNKER.IO PRODUCT - <span style="color:var(--primary)">4/19/26</span></p>
+                <p>🔥 CS2 PRODUCT - <span style="color:var(--primary)">4/29/26</span></p>
+            </div>
+
+            <div id="admin" class="tab-content">
+                <h2 style="font-family:'Orbitron'; color:var(--secondary);">ADMIN OVERRIDE</h2>
+                
+                <div class="admin-card">
+                    <h4>BROADCAST ALERT</h4>
+                    <input type="text" id="alert-msg" placeholder="Enter custom message...">
+                    <button class="btn" style="border-color:var(--secondary); color:var(--secondary)" onclick="sendAlert()">SEND ALERT</button>
+                </div>
+
+                <div class="admin-card">
+                    <h4>BAN SYSTEM (HWID/IP)</h4>
+                    <input type="text" id="ban-user" placeholder="Target Username">
+                    <button class="btn" style="border-color:#ff0000; color:#ff0000" onclick="banUser()">EXECUTE BAN</button>
+                </div>
+
+                <div class="admin-card">
+                    <h4>USER LIST</h4>
+                    <ul id="user-list" style="font-size:0.8rem; color:#888; list-style:none; padding:0;">
+                        <li>ZAYDEN [OWNER] - 127.0.0.1</li>
+                        <li>Guest_9921 - 192.168.1.5</li>
+                    </ul>
                 </div>
             </div>
         </main>
@@ -186,58 +156,68 @@
 </div>
 
 <script>
-    // FALLING STARS ANIMATION
+    // STARS
     const canvas = document.getElementById('stars');
     const ctx = canvas.getContext('2d');
     let stars = [];
-
-    function setup() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+    function init() {
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
         stars = [];
-        for(let i=0; i<120; i++) {
-            stars.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                size: Math.random() * 2 + 1,
-                velocity: Math.random() * 4 + 2
-            });
-        }
+        for(let i=0; i<100; i++) stars.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, s:Math.random()*2, v:Math.random()*4+2});
     }
-
     function draw() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = "#fff";
+        ctx.clearRect(0,0,canvas.width, canvas.height);
+        ctx.fillStyle="#fff";
         stars.forEach(s => {
-            ctx.beginPath();
-            ctx.arc(s.x, s.y, s.size/2, 0, Math.PI * 2);
-            ctx.fill();
-            s.y += s.velocity;
-            if(s.y > canvas.height) { s.y = -10; s.x = Math.random() * canvas.width; }
+            ctx.beginPath(); ctx.arc(s.x, s.y, s.s/2, 0, Math.PI*2); ctx.fill();
+            s.y += s.v; if(s.y > canvas.height) s.y = -10;
         });
         requestAnimationFrame(draw);
     }
 
-    // UI LOGIC
-    function toggleAuth(signup) {
-        document.getElementById('login-box').style.display = signup ? 'none' : 'block';
-        document.getElementById('signup-box').style.display = signup ? 'block' : 'none';
+    // AUTH & OWNER CHECK
+    function login() {
+        const u = document.getElementById('user').value.toLowerCase();
+        const p = document.getElementById('pass').value;
+
+        if(u === "zayden" && p === "admin") {
+            document.getElementById('owner-nav').style.display = "flex";
+            document.getElementById('tag').innerText = "OWNER: ZAYDEN";
+        } else {
+            document.getElementById('tag').innerText = "AGENT: " + u.toUpperCase();
+        }
+        
+        document.getElementById('auth-gate').style.display = "none";
+        document.getElementById('main').style.display = "flex";
     }
 
-    function authenticate() {
-        document.getElementById('auth-gate').style.display = 'none';
-        document.getElementById('main-app').style.display = 'flex';
-    }
-
-    function switchTab(id, el) {
+    // FUNCTIONALITY
+    function tab(id, el) {
         document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         el.classList.add('active');
     }
 
-    window.onresize = setup;
-    setup(); draw();
+    function sendAlert() {
+        const msg = document.getElementById('alert-msg').value;
+        const bar = document.getElementById('broadcast-bar');
+        bar.innerText = "OWNER BROADCAST: " + msg.toUpperCase();
+        bar.style.display = "block";
+    }
+
+    function banUser() {
+        const user = document.getElementById('ban-user').value;
+        alert("Banning User: " + user + " (HWID & IP LOGGED)");
+    }
+
+    function installScript() {
+        alert("Downloading Kour.io Script protocol...");
+        window.location.href = "https://neurohub-v1.netlify.app/scripts/kour-main.js";
+    }
+
+    init(); draw();
+    window.onresize = init;
 </script>
 </body>
 </html>
