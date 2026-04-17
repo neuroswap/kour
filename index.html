@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEUROHUB | Portal</title>
-    <link rel="icon" href="https://img.icons8.com/ios-filled/50/00f2ff/skull.png" type="image/png">
+    <title>NEUROHUB | Elite</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
@@ -13,170 +12,63 @@
         :root {
             --primary: #00f2ff;
             --secondary: #ff007f;
-            --bg-dark: #0a0c10;
-            --panel-bg: rgba(13, 17, 23, 0.8);
-            --sidebar-width: 240px;
-            --topbar-height: 60px;
-            --border: rgba(255, 255, 255, 0.1);
-            --glass: rgba(255, 255, 255, 0.03);
+            --bg-dark: #050505;
+            --panel-bg: rgba(10, 10, 10, 0.9);
+            --border: rgba(0, 242, 255, 0.3);
         }
 
-        * { box-sizing: border-box; transition: all 0.2s ease-in-out; }
-        body, html { 
-            margin: 0; padding: 0; 
-            background: var(--bg-dark); 
-            color: #fff; 
-            font-family: 'Inter', sans-serif; 
-            height: 100vh; 
-            overflow: hidden; 
-        }
+        * { cursor: crosshair !important; box-sizing: border-box; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+        body, html { margin: 0; padding: 0; background: var(--bg-dark); color: #fff; font-family: 'Inter', sans-serif; height: 100vh; overflow: hidden; }
 
-        /* PURPLE STARFIELD BACKGROUND */
-        #star-canvas {
-            position: fixed;
-            inset: 0;
-            z-index: -1;
-            background: radial-gradient(circle at center, #1a0b2e 0%, #0a0c10 100%);
-        }
+        /* FALLING STARS BACKGROUND */
+        #star-canvas { position: fixed; inset: 0; z-index: -1; background: #000; }
 
-        /* TOP GLOBAL ALERT */
-        #global-alert {
-            height: 35px;
-            background: rgba(0, 242, 255, 0.15);
-            border-bottom: 1px solid var(--primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.75rem;
-            color: var(--primary);
-            letter-spacing: 1px;
-            z-index: 1001;
-        }
+        /* BUTTON ANIMATIONS */
+        button, .nav-item, .action-btn { position: relative; overflow: hidden; }
+        button:hover, .action-btn:hover { transform: scale(1.03); filter: brightness(1.2); box-shadow: 0 0 15px var(--primary); }
+        button:active { transform: scale(0.95); }
 
-        /* MAIN CONTAINER */
-        .wrapper { display: flex; flex-direction: column; height: 100vh; }
-        
-        /* TOP NAVIGATION BAR */
-        .top-nav {
-            height: var(--topbar-height);
-            background: rgba(0, 0, 0, 0.4);
+        /* AUTH GATE WITH FALLING STARS */
+        #auth-gate { position: fixed; inset: 0; z-index: 10000; display: flex; align-items: center; justify-content: center; background: #000; }
+        .auth-box { 
+            background: var(--panel-bg); 
+            border: 2px solid var(--primary); 
+            padding: 50px; 
+            border-radius: 20px; 
+            width: 400px; 
+            text-align: center; 
             backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 25px;
+            box-shadow: 0 0 40px rgba(0, 242, 255, 0.2);
         }
+        .auth-box h2 { font-family: 'Orbitron'; color: var(--primary); margin-bottom: 30px; letter-spacing: 3px; }
+        input { width: 100%; background: #111; border: 1px solid var(--border); padding: 14px; color: #fff; margin-bottom: 15px; border-radius: 8px; outline: none; }
+        input:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(0, 242, 255, 0.3); }
 
-        .logo-section { display: flex; align-items: center; gap: 12px; }
-        .logo-section h2 { font-family: 'Orbitron'; font-size: 1.1rem; margin: 0; letter-spacing: 2px; }
-        .user-profile { display: flex; align-items: center; gap: 10px; font-size: 0.85rem; color: #aaa; }
-
-        /* CONTENT LAYOUT */
+        /* PORTAL LAYOUT */
+        .wrapper { display: none; height: 100vh; flex-direction: column; }
+        .top-nav { height: 65px; background: rgba(0,0,0,0.8); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; }
         .main-body { display: flex; flex: 1; overflow: hidden; }
-
+        
         /* SIDEBAR */
-        .sidebar {
-            width: var(--sidebar-width);
-            background: rgba(0, 0, 0, 0.3);
-            border-right: 1px solid var(--border);
-            padding: 30px 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
+        .sidebar { width: 250px; background: rgba(5,5,5,0.9); border-right: 1px solid var(--border); padding: 40px 20px; display: flex; flex-direction: column; gap: 15px; }
+        .nav-item { padding: 15px; border-radius: 10px; font-family: 'Orbitron'; font-size: 0.8rem; color: #666; display: flex; align-items: center; gap: 15px; text-transform: uppercase; }
+        .nav-item:hover { color: #fff; background: rgba(255,255,255,0.05); }
+        .nav-item.active { color: var(--primary); background: rgba(0, 242, 255, 0.1); border-right: 4px solid var(--primary); }
 
-        .nav-item {
-            padding: 12px 18px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            color: #888;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-transform: uppercase;
-            font-weight: 600;
-        }
+        /* CONTENT */
+        .content { flex: 1; padding: 60px; overflow-y: auto; }
+        .tab-content { display: none; animation: slideUp 0.5s ease; }
+        .tab-content.active { display: block; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        .nav-item:hover { background: var(--glass); color: #fff; }
-        .nav-item.active { background: rgba(0, 242, 255, 0.1); color: var(--primary); }
+        /* OWNER PANEL GRID */
+        .feat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
+        .feat-card { background: #111; border: 1px solid #222; padding: 15px; border-radius: 8px; text-align: center; font-size: 0.8rem; }
+        .feat-card:hover { border-color: var(--primary); background: #161616; }
 
-        /* PRODUCT AREA */
-        .content-container {
-            flex: 1;
-            padding: 40px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .welcome-header {
-            text-align: center;
-            font-family: 'Orbitron';
-            margin-bottom: 50px;
-        }
-        .welcome-header h1 { font-size: 1.8rem; letter-spacing: 4px; margin: 0; }
-        .welcome-header p { font-size: 0.8rem; color: #666; margin-top: 10px; }
-
-        /* PRODUCT CARDS GRID */
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 30px;
-            width: 100%;
-            max-width: 1100px;
-        }
-
-        .card {
-            background: var(--panel-bg);
-            border: 1px solid var(--primary);
-            border-radius: 12px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 0 20px rgba(0, 242, 255, 0.05);
-        }
-
-        .card-header-icon {
-            padding: 15px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-        }
-
-        .card-img {
-            width: 100%;
-            height: 250px;
-            background: #111;
-            overflow: hidden;
-        }
-        .card-img img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
-
-        .card-body { padding: 30px; text-align: center; flex: 1; }
-        .card-body h3 { font-family: 'Orbitron'; font-size: 1.2rem; color: var(--primary); margin: 0 0 15px 0; }
-        .card-body p { font-size: 0.85rem; color: #888; line-height: 1.6; margin-bottom: 25px; }
-
-        .action-btn {
-            border: 1px solid var(--primary);
-            background: transparent;
-            color: var(--primary);
-            padding: 12px;
-            width: 100%;
-            border-radius: 6px;
-            font-family: 'Orbitron';
-            font-size: 0.8rem;
-            cursor: pointer;
-            text-decoration: none;
-            display: block;
-        }
-        .action-btn:hover { background: var(--primary); color: #000; box-shadow: 0 0 15px var(--primary); }
-
-        /* AUTH BOX (Restored for login) */
-        #auth-gate { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; align-items: center; justify-content: center; }
-        .auth-box { background: #080808; border: 1px solid var(--primary); padding: 40px; border-radius: 12px; width: 350px; text-align: center; }
-        input { width: 100%; background: #111; border: 1px solid var(--border); padding: 12px; color: #fff; margin-bottom: 10px; border-radius: 4px; outline: none; }
+        .action-btn { background: transparent; border: 1px solid var(--primary); color: var(--primary); padding: 12px; border-radius: 5px; font-family: 'Orbitron'; width: 100%; margin-top: 10px; }
+        
+        .welcome-text { font-family: 'Orbitron'; font-size: 4rem; text-align: center; margin-top: 15vh; color: var(--primary); text-shadow: 0 0 30px rgba(0, 242, 255, 0.5); }
     </style>
 </head>
 <body>
@@ -184,123 +76,132 @@
 <canvas id="star-canvas"></canvas>
 
 <div id="auth-gate">
-    <div class="auth-box">
-        <h2 style="font-family:'Orbitron'; color:var(--primary);">NEURO LOGIN</h2>
-        <input type="text" id="username" placeholder="Username">
-        <input type="password" id="password" placeholder="Password">
-        <button class="action-btn" onclick="handleAuth()">AUTHORIZE</button>
+    <div class="auth-box" id="login-form">
+        <h2>NEURO LOGIN</h2>
+        <input type="text" id="l-user" placeholder="USERNAME">
+        <input type="password" id="l-pass" placeholder="PASSWORD">
+        <button class="action-btn" onclick="handleLogin()">AUTHORIZE</button>
+        <p style="font-size: 0.7rem; color: #444; margin-top: 20px; cursor: pointer;" onclick="toggleAuth(true)">CREATE NEW IDENTITY</p>
+    </div>
+
+    <div class="auth-box" id="signup-form" style="display:none;">
+        <h2>NEURO SIGN UP</h2>
+        <input type="text" id="s-user" placeholder="CHOOSE USERNAME">
+        <input type="password" id="s-pass" placeholder="CHOOSE PASSWORD">
+        <button class="action-btn" onclick="handleSignUp()">REGISTER</button>
+        <p style="font-size: 0.7rem; color: #444; margin-top: 20px; cursor: pointer;" onclick="toggleAuth(false)">RETURN TO LOGIN</p>
     </div>
 </div>
 
-<div class="wrapper">
-    <div id="global-alert">⚠️ GLOBAL ALERT: Logged in. System ready for auto-injection.</div>
-    
+<div class="wrapper" id="main-ui">
     <nav class="top-nav">
-        <div class="logo-section">
-            <img src="https://img.icons8.com/ios-filled/50/00f2ff/brain.png" width="24">
-            <h2>NEUROHUB</h2>
-        </div>
-        <div class="user-profile">
-            <span id="user-display">Guest</span>
-            <img src="https://img.icons8.com/ios-glyphs/30/888888/user.png" width="20">
-        </div>
+        <div style="font-family:'Orbitron'; color:var(--primary); letter-spacing:2px;">NEUROHUB // ELITE</div>
+        <div id="user-tag" style="font-size:0.8rem; color:#888;">AGENT: NULL</div>
     </nav>
 
     <div class="main-body">
         <aside class="sidebar">
-            <div class="nav-item">📊 Dashboard</div>
-            <div class="nav-item active">📦 Products</div>
-            <div class="nav-item">📅 Events</div>
-            <div class="nav-item">⚙️ Settings</div>
-            <div class="nav-item" style="margin-top:auto" onclick="logout()">🚪 Logout</div>
+            <div class="nav-item active" onclick="showTab('dash', this)">📊 Dashboard</div>
+            <div class="nav-item" onclick="showTab('owner', this)">💀 Owner Panel</div>
+            <div class="nav-item" onclick="showTab('events', this)">📅 Events</div>
+            <div class="nav-item" onclick="showTab('settings', this)">⚙️ Settings</div>
+            <div class="nav-item" style="margin-top:auto; color:var(--secondary)" onclick="location.reload()">🚪 Terminate</div>
         </aside>
 
-        <main class="content-container">
-            <div class="welcome-header">
-                <p>WELCOME TO</p>
-                <h1>NEUROHUB PORTAL</h1>
+        <main class="content">
+            <div id="dash" class="tab-content active">
+                <h1 class="welcome-text">WELCOME TO NEUROCHEATS!</h1>
             </div>
 
-            <div class="cards-grid">
-                <div class="card">
-                    <div class="card-header-icon"><img src="https://img.icons8.com/ios-filled/50/00f2ff/skull.png" width="20"></div>
-                    <div class="card-img">
-                        <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=1000">
-                    </div>
-                    <div class="card-body">
-                        <h3>V6 OPTIMIZER (ELITE)</h3>
-                        <p>V6 Optimizer (ELITE) is a suite for optimized PC data based PC optimizing system and unlocking frame rates for high performance gaming.</p>
-                        <a href="#" class="action-btn">DOWNLOAD EXE</a>
-                    </div>
+            <div id="owner" class="tab-content">
+                <h2 style="font-family:'Orbitron'; border-bottom:1px solid var(--border); padding-bottom:10px;">SYSTEM OVERRIDE</h2>
+                <div class="feat-grid">
+                    <div class="feat-card">AIMBOT</div>
+                    <div class="feat-card">ESP</div>
+                    <div class="feat-card">CROSSHAIR</div>
+                    <div class="feat-card">TRIGGERBOT</div>
+                    <div class="feat-card">V6 OPTIMIZER</div>
+                    <div class="feat-card">DNS FLUSH</div>
+                    <div class="feat-card">GPU BOOST</div>
+                    <div class="feat-card">CLEANER</div>
                 </div>
+            </div>
 
-                <div class="card">
-                    <div class="card-header-icon"><img src="https://img.icons8.com/ios-filled/50/00f2ff/skull.png" width="20"></div>
-                    <div class="card-img">
-                        <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=1000">
-                    </div>
-                    <div class="card-body">
-                        <h3>KOUR.IO CHEAT</h3>
-                        <p>Kour.io Cheat is a collate of your cheats: Aimbot, ESP, and Radar with scripts targeted for enhancement and dominance.</p>
-                        <a href="#" class="action-btn">INSTALL SCRIPT</a>
-                    </div>
+            <div id="events" class="tab-content">
+                <h2 style="font-family:'Orbitron'; color:var(--primary);">UPCOMING RELEASES</h2>
+                <div style="margin-top:30px; border-left: 2px solid var(--primary); padding-left: 20px;">
+                    <p>🚀 <b>KRUNKER.IO</b> NEW CHEAT RELEASE - <span style="color:var(--primary)">4/19/26</span></p>
+                    <p>🔥 <b>CS2</b> CHEAT PROTOCOL RELEASE - <span style="color:var(--primary)">4/29/26</span></p>
                 </div>
+            </div>
+
+            <div id="settings" class="tab-content">
+                <h2 style="font-family:'Orbitron';">USER PREFERENCES</h2>
+                <p>Discord Integration: <span style="color:var(--primary)">CONNECTED</span></p>
+                <p>Auto-Inject: [ON]</p>
+                <p>Theme: NEON DARK</p>
             </div>
         </main>
     </div>
 </div>
 
 <script>
-    // Star Background Logic
+    // STAR ANIMATION
     const canvas = document.getElementById('star-canvas');
     const ctx = canvas.getContext('2d');
     let stars = [];
 
-    function init() {
+    function initStars() {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
         stars = [];
-        for(let i=0; i<150; i++) {
+        for(let i=0; i<100; i++) {
             stars.push({
                 x: Math.random() * canvas.width,
                 y: Math.random() * canvas.height,
-                size: Math.random() * 2,
-                speed: Math.random() * 0.5 + 0.2,
-                color: Math.random() > 0.8 ? '#ff007f' : '#00f2ff'
+                s: Math.random() * 3 + 1,
+                speed: Math.random() * 5 + 2
             });
         }
     }
 
     function animate() {
-        ctx.clearRect(0,0,canvas.width, canvas.height);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "#fff";
         stars.forEach(s => {
-            ctx.fillStyle = s.color;
-            ctx.globalAlpha = 0.3;
             ctx.beginPath();
-            ctx.arc(s.x, s.y, s.size, 0, Math.PI*2);
+            ctx.arc(s.x, s.y, s.s/2, 0, Math.PI*2);
             ctx.fill();
             s.y += s.speed;
-            if(s.y > canvas.height) s.y = 0;
+            if(s.y > canvas.height) { s.y = -10; s.x = Math.random() * canvas.width; }
         });
         requestAnimationFrame(animate);
     }
 
-    // Auth Logic
-    function handleAuth() {
-        const u = document.getElementById('username').value;
-        const p = document.getElementById('password').value;
-        if(u === "neuro(owner)" && p === "admin") {
+    // AUTH LOGIC
+    function toggleAuth(showSignup) {
+        document.getElementById('login-form').style.display = showSignup ? 'none' : 'block';
+        document.getElementById('signup-form').style.display = showSignup ? 'block' : 'none';
+    }
+
+    function handleLogin() {
+        const u = document.getElementById('l-user').value;
+        if(u) {
             document.getElementById('auth-gate').style.display = 'none';
-            document.getElementById('user-display').innerText = u;
-        } else {
-            alert("ACCESS DENIED");
+            document.getElementById('main-ui').style.display = 'flex';
+            document.getElementById('user-tag').innerText = "AGENT: " + u.toUpperCase();
         }
     }
 
-    function logout() { location.reload(); }
+    function showTab(id, el) {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        el.classList.add('active');
+    }
 
-    window.addEventListener('resize', init);
-    init(); animate();
+    window.addEventListener('resize', initStars);
+    initStars(); animate();
 </script>
 </body>
 </html>
