@@ -2,7 +2,7 @@ import pyrebase
 import requests
 
 # YOUR DATA
-BOT_TOKEN = "MTQ5NDgyMjI0MTA4OTg4MDIwNQ.GVQbrg.6PavnujX_LmeI8b70iRwxgraeKWGjo0AIU9aAg"
+BOT_TOKEN = "MTQ5NDgyMjI0MTA4OTg4MDIwNQ.GavAeO.Vne4lYUGQDeKwxjXcDInZbrhrOn1FeUI77yAoY"
 GUILD_ID = "1494771338571681873" 
 
 config = {
