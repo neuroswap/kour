@@ -29,13 +29,13 @@
 
         /* TOS MODAL */
         #tos-gate { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 10001; display: none; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
-        .tos-box { background: #080808; border: 1px solid var(--border); padding: 30px; border-radius: 20px; width: 450px; text-align: left; }
+        .tos-box { background: #080808; border: 1px solid var(--border); padding: 30px; border-radius: 20px; width: 450px; }
 
         /* MAIN LAYOUT */
         #main-ui { display: none; height: 100vh; grid-template-columns: 280px 1fr; }
 
         /* SIDEBAR */
-        .sidebar { background: rgba(0,0,0,0.8); backdrop-filter: blur(20px); border-right: 1px solid var(--border); padding: 40px 20px; display: flex; flex-direction: column; gap: 10px; }
+        .sidebar { background: rgba(0,0,0,0.8); backdrop-filter: blur(20px); border-right: 1px solid var(--border); padding: 40px 20px; display: flex; flex-direction: column; gap: 10px; position: relative; }
         .sidebar h2 { font-family: 'Orbitron'; font-size: 1.4rem; color: var(--primary); margin-bottom: 40px; letter-spacing: 4px; text-align: center; }
         .nav-tab { padding: 16px; border-radius: 15px; cursor: pointer; font-family: 'Orbitron'; font-size: 0.75rem; color: #666; display: flex; align-items: center; gap: 12px; border: 1px solid transparent; }
         .nav-tab:hover { color: #fff; background: rgba(255,255,255,0.05); }
@@ -48,18 +48,20 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .panel { background: var(--glass); border: 1px solid var(--border); border-radius: 24px; padding: 30px; margin-bottom: 25px; }
-        .btn { background: var(--primary); color: #000; font-family: 'Orbitron'; font-weight: 900; padding: 18px 35px; border-radius: 50px; border: none; cursor: pointer; text-decoration: none; display: inline-block; text-align: center; font-size: 0.9rem; }
+        .btn { background: var(--primary); color: #000; font-family: 'Orbitron'; font-weight: 900; padding: 12px 25px; border-radius: 50px; border: none; cursor: pointer; text-decoration: none; display: inline-block; text-align: center; font-size: 0.8rem; }
         .btn:hover { transform: scale(1.05); box-shadow: 0 0 25px var(--primary); background: #fff; }
         .btn-admin { background: var(--secondary); color: #fff; margin-top: 10px; width: 100%; border-radius: 12px; padding: 12px; font-size: 0.7rem; }
 
-        /* CHAT */
-        #chat-display { height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding: 20px; background: rgba(0,0,0,0.3); border-radius: 18px; border: 1px solid var(--border); }
-        .msg { background: rgba(255,255,255,0.04); padding: 12px; border-radius: 12px; font-size: 0.85rem; }
-        .msg.owner { border-left: 4px solid var(--secondary); background: rgba(255, 0, 127, 0.05); }
-        .msg b { color: var(--primary); font-family: 'Orbitron'; font-size: 0.7rem; margin-right: 8px; }
+        /* TICKETS & CHAT */
+        .ticket-item { background: rgba(255,255,255,0.03); border: 1px solid var(--border); padding: 15px; border-radius: 15px; margin-bottom: 12px; }
+        #ticket-chat-area { display: none; background: rgba(0,0,0,0.5); border: 1px solid var(--primary); border-radius: 15px; padding: 15px; margin-top: 20px; }
+        .chat-box { height: 200px; overflow-y: auto; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 10px; margin-bottom: 10px; font-size: 0.8rem; }
+        
+        /* LOGOUT BUTTON */
+        #logout-btn { position: absolute; bottom: 20px; left: 20px; font-size: 0.6rem; padding: 8px 15px; background: transparent; border: 1px solid var(--secondary); color: var(--secondary); border-radius: 8px; cursor: pointer; font-family: 'Orbitron'; }
+        #logout-btn:hover { background: var(--secondary); color: white; }
 
-        #global-alert { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: var(--secondary); padding: 10px 30px; border-radius: 50px; font-weight: bold; z-index: 10001; display: none; animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        #global-alert { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: var(--secondary); padding: 10px 30px; border-radius: 50px; font-weight: bold; z-index: 10001; display: none; }
     </style>
 </head>
 <body id="main-body">
@@ -79,15 +81,9 @@
 
 <div id="tos-gate">
     <div class="tos-box">
-        <h2 style="font-family: 'Orbitron'; color: var(--primary); margin-top:0;">TERMS OF SERVICE</h2>
-        <div style="height: 200px; overflow-y: auto; color: #888; font-size: 0.8rem; border-bottom: 1px solid var(--border); margin-bottom: 20px; padding-right: 10px;">
-            1. You agree that NeuroHub is provided "as-is".<br><br>
-            2. Using third-party tools (Kour.io) may result in game bans. Use at your own risk.<br><br>
-            3. The Optimizer V6 is safe but use it responsibly.<br><br>
-            4. Harassment in Global Chat will result in a permanent HWID/IP ban from our services.<br><br>
-            5. Do not share your account credentials.
-        </div>
-        <button class="btn" style="width:100%" onclick="acceptTos()">I AGREE & ENTER</button>
+        <h2 style="font-family: 'Orbitron'; color: var(--primary);">TOS AGREEMENT</h2>
+        <p style="color:#666; font-size:0.8rem;">By entering, you agree not to abuse the chat or scripts. Bans are permanent.</p>
+        <button class="btn" style="width:100%" onclick="acceptTos()">AGREE & ENTER</button>
     </div>
 </div>
 
@@ -98,66 +94,59 @@
         <div class="nav-tab" onclick="showTab('chat', this)">COMMUNITY</div>
         <div class="nav-tab" onclick="showTab('support', this)">SUPPORT</div>
         <div id="admin-tab" class="nav-tab" style="display:none; color:var(--secondary);" onclick="showTab('admin', this)">OWNER PANEL</div>
+        <button id="logout-btn" onclick="logout()">LOGOUT</button>
     </div>
 
     <div class="content-area">
         <div id="products" class="tab-content active">
-            <h1 style="font-family:'Orbitron'; font-size:3rem; margin:0;">MODULE HUB</h1>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 40px;">
+            <h1 style="font-family:'Orbitron';">MODULE HUB</h1>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                 <div class="panel">
-                    <h2 style="font-family:'Orbitron'; color:var(--primary);">V6 OPTIMIZER</h2>
-                    <p style="color:#888;">Stand-alone PC Utility.</p>
-                    <a href="NeuroHub_V6_Elite.exe" download="NeuroHub_V6_Elite.exe" class="btn">DOWNLOAD EXE</a>
+                    <h3>V6 OPTIMIZER</h3>
+                    <a href="NeuroHub_V6_Elite.exe" download class="btn">DOWNLOAD EXE</a>
                 </div>
                 <div class="panel">
-                    <h2 style="font-family:'Orbitron'; color:var(--secondary);">KOUR.IO INTERNAL</h2>
-                    <p style="color:#888;">Requires Tampermonkey.</p>
+                    <h3>KOUR.IO INTERNAL</h3>
                     <a href="https://raw.githubusercontent.com/neuroswap/ddos/main/kour-internal.user.js" class="btn" style="background:var(--secondary); color:white;">INSTALL SCRIPT</a>
                 </div>
             </div>
         </div>
 
         <div id="chat" class="tab-content">
-            <h2 style="font-family:'Orbitron';">GLOBAL TRANSMISSION</h2>
-            <div id="chat-display"></div>
-            <div style="display:flex; gap:12px; margin-top:20px;">
-                <input type="text" id="chatInput" placeholder="Enter message..." style="margin:0;">
-                <button class="btn" style="padding:0 30px;" onclick="sendMsg()">SEND</button>
-            </div>
+            <h2>GLOBAL CHAT</h2>
+            <div id="chat-display" class="chat-box" style="height:400px;"></div>
+            <input type="text" id="chatInput" placeholder="Message..."><button class="btn" onclick="sendMsg()">SEND</button>
         </div>
 
         <div id="support" class="tab-content">
-            <h2 style="font-family:'Orbitron';">SUPPORT TICKETS</h2>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:30px;">
-                <div class="panel">
-                    <h3>NEW TICKET</h3>
-                    <input type="text" id="t-subject" placeholder="Subject">
-                    <textarea id="t-body" placeholder="Describe issue..." rows="4"></textarea>
-                    <button class="btn" onclick="fileTicket()">SUBMIT</button>
-                </div>
-                <div class="panel">
-                    <h3>YOUR TICKETS</h3>
-                    <div id="user-tickets"></div>
-                </div>
+            <h2>SUPPORT SYSTEM</h2>
+            <div class="panel">
+                <input type="text" id="t-subject" placeholder="Issue Subject">
+                <textarea id="t-body" placeholder="Describe..."></textarea>
+                <button class="btn" onclick="fileTicket()">OPEN TICKET</button>
+            </div>
+            <h3>YOUR TICKETS</h3>
+            <div id="user-tickets"></div>
+            
+            <div id="ticket-chat-area">
+                <h4 id="active-ticket-id">Ticket Chat</h4>
+                <div id="t-chat-display" class="chat-box"></div>
+                <input type="text" id="t-chat-input" placeholder="Reply to support..."><button class="btn" onclick="sendTicketMsg()">REPLY</button>
             </div>
         </div>
 
         <div id="admin" class="tab-content">
-            <h2 style="font-family:'Orbitron'; color:var(--secondary);">OWNER COMMAND</h2>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
-                <div class="panel">
-                    <h3>MASTER TICKETS</h3>
-                    <div id="admin-all-tickets" style="max-height: 300px; overflow-y:auto;"></div>
-                </div>
-                <div class="panel">
-                    <h3>SERVER ACTIONS</h3>
-                    <button class="btn btn-admin" onclick="db.ref('messages').remove()">WIPE CHAT</button>
-                    <button class="btn btn-admin" onclick="setCustomAlert()">SET CUSTOM ALERT</button>
-                    <button class="btn btn-admin" onclick="toggleAlert()">TOGGLE ALERT ON/OFF</button>
-                    <button class="btn btn-admin" style="background:#333;" onclick="db.ref('users').remove(); alert('Users Wiped');">WIPE ALL USERS</button>
-                    <button class="btn btn-admin" style="background:#444;" onclick="viewUsers()">LIST USERS</button>
-                    <div id="user-list-view" style="margin-top:15px; font-size:0.7rem; color:var(--primary);"></div>
-                </div>
+            <h2>OWNER PANEL</h2>
+            <div class="panel">
+                <h3>MANAGE TICKETS</h3>
+                <div id="admin-all-tickets"></div>
+            </div>
+            <div class="panel">
+                <h3>USER MANAGEMENT</h3>
+                <input type="text" id="ban-target" placeholder="Username to Ban">
+                <button class="btn btn-admin" onclick="banUser()">BAN USER</button>
+                <button class="btn btn-admin" onclick="viewUsers()">LIST USERS</button>
+                <div id="user-list-view"></div>
             </div>
         </div>
     </div>
@@ -176,9 +165,11 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    let currentUser = "";
-    let isOwner = false;
-    let isSignUp = false;
+    let currentUser = localStorage.getItem('neuroUser') || "";
+    let isOwner = localStorage.getItem('neuroIsOwner') === 'true';
+    let currentTicketId = "";
+
+    window.onload = () => { if(currentUser) autoLogin(); };
 
     function toggleAuth() { isSignUp = !isSignUp; document.getElementById('auth-title').innerText = isSignUp ? "NEURO SIGN UP" : "NEURO LOGIN"; }
 
@@ -186,23 +177,36 @@
         const u = document.getElementById('username').value.trim();
         const p = document.getElementById('password').value.trim();
         if(!u || !p) return;
-        if(u === "neuro(owner)" && p === "admin") { isOwner = true; triggerTos(u); return; }
+
+        // Check Ban List first
+        const banSnap = await db.ref('bans/' + u).once('value');
+        if(banSnap.exists()) { alert("YOU ARE BANNED"); return; }
+
+        if(u === "neuro(owner)" && p === "admin") { isOwner = true; saveUser(u, true); return; }
 
         const userRef = db.ref('users/' + u);
         const snap = await userRef.once('value');
-        if(isSignUp) {
-            if(snap.exists()) alert("User already exists!");
-            else { await userRef.set({ pass: p }); triggerTos(u); }
-        } else {
-            if(snap.exists() && snap.val().pass === p) triggerTos(u);
-            else alert("Invalid Credentials!");
-        }
+        if(snap.exists() && snap.val().pass === p) saveUser(u, false);
+        else if(!snap.exists()) { await userRef.set({ pass: p }); saveUser(u, false); }
+        else alert("Wrong credentials");
     }
 
-    function triggerTos(name) {
-        currentUser = name;
+    function saveUser(u, owner) {
+        localStorage.setItem('neuroUser', u);
+        localStorage.setItem('neuroIsOwner', owner);
+        currentUser = u; isOwner = owner;
         document.getElementById('auth-gate').style.display = 'none';
         document.getElementById('tos-gate').style.display = 'flex';
+    }
+
+    function autoLogin() {
+        document.getElementById('auth-gate').style.display = 'none';
+        acceptTos();
+    }
+
+    function logout() {
+        localStorage.clear();
+        location.reload();
     }
 
     function acceptTos() {
@@ -213,86 +217,80 @@
     }
 
     function initStreams() {
+        // Check if current user got banned while logged in
+        db.ref('bans/' + currentUser).on('value', s => { if(s.exists()) logout(); });
+
         db.ref('messages').limitToLast(25).on('child_added', s => {
             const d = s.val();
-            const m = document.createElement('div');
-            m.className = `msg ${d.owner ? 'owner' : ''}`;
-            m.innerHTML = `<b>${d.user.toUpperCase()}</b> ${d.text}`;
-            const display = document.getElementById('chat-display');
-            display.appendChild(m);
-            display.scrollTop = display.scrollHeight;
+            document.getElementById('chat-display').innerHTML += `<div><b>${d.user}:</b> ${d.text}</div>`;
         });
 
         db.ref('tickets').on('value', s => {
-            const userDiv = document.getElementById('user-tickets');
-            const adminDiv = document.getElementById('admin-all-tickets');
-            userDiv.innerHTML = ""; adminDiv.innerHTML = "";
-            s.forEach(child => {
-                const t = child.val();
-                const key = child.key;
+            const uDiv = document.getElementById('user-tickets');
+            const aDiv = document.getElementById('admin-all-tickets');
+            uDiv.innerHTML = ""; aDiv.innerHTML = "";
+            s.forEach(c => {
+                const t = c.val(); const k = c.key;
                 const html = `<div class="ticket-item">
-                    ${isOwner ? `<span class="del-btn" onclick="db.ref('tickets/${key}').remove()">DELETE</span>` : ''}
-                    <b>[${t.sub}]</b><br>${t.body}<br><small>USER: ${t.user}</small>
+                    <b>[${t.sub}]</b> - ${t.user} 
+                    <button class="btn" style="padding:4px 10px" onclick="openTicketChat('${k}')">JOIN CHAT</button>
+                    ${isOwner ? `<button class="btn" style="background:red" onclick="db.ref('tickets/${k}').remove()">DELETE</button>` : ''}
                 </div>`;
-                if(isOwner) adminDiv.innerHTML += html;
-                if(t.user === currentUser) userDiv.innerHTML += html;
+                if(isOwner) aDiv.innerHTML += html;
+                if(t.user === currentUser) uDiv.innerHTML += html;
             });
-        });
-
-        db.ref('system_alert').on('value', s => {
-            const alertBox = document.getElementById('global-alert');
-            if(s.val() && s.val().active) {
-                alertBox.innerText = s.val().msg;
-                alertBox.style.display = 'block';
-            } else alertBox.style.display = 'none';
         });
     }
 
-    function showTab(id, el) {
-        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        el.classList.add('active');
+    function openTicketChat(id) {
+        currentTicketId = id;
+        document.getElementById('ticket-chat-area').style.display = 'block';
+        document.getElementById('active-ticket-id').innerText = "Chatting on Ticket: " + id;
+        db.ref('ticket_msgs/' + id).on('value', s => {
+            const box = document.getElementById('t-chat-display');
+            box.innerHTML = "";
+            s.forEach(m => { box.innerHTML += `<div><b>${m.val().user}:</b> ${m.val().text}</div>`; });
+            box.scrollTop = box.scrollHeight;
+        });
+    }
+
+    function sendTicketMsg() {
+        const val = document.getElementById('t-chat-input').value;
+        if(val && currentTicketId) db.ref('ticket_msgs/' + currentTicketId).push({ user: currentUser, text: val });
+        document.getElementById('t-chat-input').value = "";
+    }
+
+    function banUser() {
+        const target = document.getElementById('ban-target').value;
+        if(target) db.ref('bans/' + target).set(true);
+        alert(target + " banned.");
     }
 
     function sendMsg() {
-        const text = document.getElementById('chatInput').value;
-        if(text) db.ref('messages').push().set({ user: currentUser, text, owner: isOwner });
+        const t = document.getElementById('chatInput').value;
+        if(t) db.ref('messages').push({user: currentUser, text: t});
         document.getElementById('chatInput').value = "";
     }
 
     function fileTicket() {
-        const sub = document.getElementById('t-subject').value;
-        const body = document.getElementById('t-body').value;
-        if(sub && body) db.ref('tickets').push().set({ user: currentUser, sub, body });
-        document.getElementById('t-subject').value = ""; document.getElementById('t-body').value = "";
+        const s = document.getElementById('t-subject').value;
+        const b = document.getElementById('t-body').value;
+        if(s && b) db.ref('tickets').push({user: currentUser, sub: s, body: b});
     }
 
-    function toggleAlert() {
-        db.ref('system_alert').once('value', s => {
-            const active = s.val() ? !s.val().active : true;
-            db.ref('system_alert/active').set(active);
-        });
+    function showTab(id, el) {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        document.querySelectorAll('.nav-tab').forEach(n => n.classList.remove('active'));
+        el.classList.add('active');
     }
 
-    function setCustomAlert() {
-        const msg = prompt("Enter Custom Alert Text:");
-        if(msg) db.ref('system_alert').set({ active: true, msg: "NEUROHUB: " + msg.toUpperCase() });
-    }
-
-    async function viewUsers() {
-        const snap = await db.ref('users').once('value');
-        const view = document.getElementById('user-list-view');
-        view.innerHTML = "REGISTERED USERS: <br>";
-        snap.forEach(u => { view.innerHTML += `> ${u.key}<br>`; });
-    }
-
+    // Visuals
     const canvas = document.getElementById('starfield');
     const ctx = canvas.getContext('2d');
     let stars = [];
     function initStars() {
         canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-        stars = [];
         for(let i=0; i<100; i++) stars.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, s:Math.random()*5+2, l:Math.random()*15+5});
     }
     function draw() {
@@ -305,7 +303,6 @@
         requestAnimationFrame(draw);
     }
     initStars(); draw();
-    window.addEventListener('resize', initStars);
 </script>
 </body>
 </html>
