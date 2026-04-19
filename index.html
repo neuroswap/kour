@@ -4,6 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NEUROHUB | Elite Portal</title>
+    
+    <meta name="title" content="NEUROHUB | Elite Portal">
+    <meta name="description" content="The future of optimization and game utilities. Level up your performance with NeuroHub Elite.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://neurohub-v1.netlify.app/">
+    <meta property="og:title" content="NEUROHUB | Elite Portal">
+    <meta property="og:description" content="Access Elite PC Optimizers and Game Modules. Built for performance.">
+    <meta property="og:image" content="https://img.icons8.com/ios-filled/100/00f2ff/skull.png">
+    <meta name="theme-color" content="#00f2ff">
+
     <link rel="icon" href="https://img.icons8.com/ios-filled/50/00f2ff/skull.png" type="image/png">
     
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -16,13 +26,16 @@
         body, html { margin: 0; padding: 0; background: var(--bg); color: #fff; font-family: 'Inter', sans-serif; height: 100vh; overflow: hidden; }
         #starfield { position: fixed; inset: 0; z-index: -1; pointer-events: none; background: #000; }
         
+        /* TOS MODAL */
         #tos-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 20000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(15px); }
         .tos-box { background: #080808; border: 1px solid var(--secondary); padding: 30px; border-radius: 20px; width: 90%; max-width: 500px; }
         .tos-content { height: 250px; overflow-y: auto; background: rgba(0,0,0,0.5); padding: 15px; font-size: 0.75rem; color: #888; border: 1px solid #222; margin: 20px 0; line-height: 1.6; }
         
+        /* AUTH GATE */
         #auth-gate { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; align-items: center; justify-content: center; }
-        .auth-box { background: #080808; border: 2px solid var(--primary); padding: 50px; border-radius: 30px; width: 420px; text-align: center; }
+        .auth-box { background: #080808; border: 2px solid var(--primary); padding: 50px; border-radius: 30px; width: 420px; text-align: center; box-shadow: 0 0 50px rgba(0, 242, 255, 0.1); }
 
+        /* MAIN LAYOUT */
         #main-ui { display: none; height: 100vh; grid-template-columns: 280px 1fr; }
         .sidebar { background: rgba(0,0,0,0.95); border-right: 1px solid var(--border); padding: 30px 15px; display: flex; flex-direction: column; gap: 8px; position: relative; }
         
@@ -33,7 +46,7 @@
         .content-area { padding: 50px; overflow-y: auto; position: relative; height: 100vh; }
         .tab-content { display: none; animation: fadeIn 0.4s ease forwards; width: 100%; }
         
-        /* Dashboard Only Centering */
+        /* Dashboard Centering Logic */
         #dash.active { display: flex !important; align-items: center; justify-content: center; text-align: center; flex-direction: column; height: 100%; }
         .tab-content.active:not(#dash) { display: block !important; }
 
@@ -89,6 +102,7 @@
         <div class="nav-tab" onclick="showTab('opt', this)">OPTIMIZERS</div>
         <div class="nav-tab" onclick="showTab('cheats', this)">CHEATS</div>
         <div class="nav-tab" onclick="showTab('info', this)">INFO</div>
+        
         <div id="admin-tab" class="nav-tab special" style="display:none;" onclick="showTab('admin', this)">OWNER PANEL</div>
 
         <div class="user-pill" onclick="logout()">
