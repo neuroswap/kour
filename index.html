@@ -35,6 +35,13 @@
         #auth-gate { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; align-items: center; justify-content: center; }
         .auth-box { background: #080808; border: 2px solid var(--primary); padding: 50px; border-radius: 30px; width: 420px; text-align: center; box-shadow: 0 0 50px rgba(0, 242, 255, 0.1); }
 
+        /* PRODUCT MODAL (THE NEW THINGY) */
+        #product-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 30000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(20px); }
+        .modal-box { background: #0a0a0a; border: 1px solid var(--primary); width: 90%; max-width: 600px; border-radius: 20px; padding: 30px; position: relative; animation: modalIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 0 50px rgba(0, 242, 255, 0.1); }
+        .modal-img { width: 100%; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 20px; background: #000; }
+        .close-modal { position: absolute; top: 20px; right: 20px; font-size: 1.5rem; color: #444; cursor: pointer; font-family: 'Orbitron'; }
+        .close-modal:hover { color: var(--secondary); }
+
         /* MAIN LAYOUT */
         #main-ui { display: none; height: 100vh; grid-template-columns: 280px 1fr; }
         .sidebar { background: rgba(0,0,0,0.95); border-right: 1px solid var(--border); padding: 30px 15px; display: flex; flex-direction: column; gap: 8px; position: relative; }
@@ -49,7 +56,12 @@
         #dash.active { display: flex !important; align-items: center; justify-content: center; text-align: center; flex-direction: column; height: 100%; }
         .tab-content.active:not(#dash) { display: block !important; }
 
+        /* GRID SYSTEM FOR CHEATS */
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
         .panel { background: var(--glass); border: 1px solid var(--border); border-radius: 15px; padding: 25px; margin-bottom: 20px; }
+        .cheat-card { background: #080808; border: 1px solid var(--border); border-radius: 15px; padding: 25px; transition: transform 0.3s ease, border-color 0.3s ease; display: flex; flex-direction: column; justify-content: space-between; }
+        .cheat-card:hover { border-color: var(--primary); transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0, 242, 255, 0.05); }
+
         .btn { background: var(--primary); color: #000; font-family: 'Orbitron'; font-weight: 900; padding: 12px; border-radius: 6px; border: none; cursor: pointer; font-size: 0.7rem; width: 100%; text-align: center; text-decoration: none; display: block; margin-top: 10px; letter-spacing: 1px; }
         .btn-discord { background: #5865F2; color: white; border-bottom: 3px solid #3b448b; }
         .btn-secondary { background: var(--secondary); color: white; }
@@ -67,12 +79,23 @@
         .cheat-sub-content.active { display: block; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes modalIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     </style>
 </head>
 <body>
 
 <canvas id="starfield"></canvas>
 <div class="version-tag">NEUROHUB V1.0.4-ELITE</div>
+
+<div id="product-modal">
+    <div class="modal-box">
+        <span class="close-modal" onclick="closeProduct()">×</span>
+        <img id="m-img" class="modal-img" src="">
+        <h2 id="m-title" style="font-family:'Orbitron'; margin:0; color:var(--primary); letter-spacing:2px;">PRODUCT</h2>
+        <p id="m-desc" style="font-size:0.85rem; color:#888; margin:15px 0;"></p>
+        <a id="m-link" href="#" class="btn btn-secondary">INSTALL NOW</a>
+    </div>
+</div>
 
 <div id="tos-overlay">
     <div class="tos-box">
@@ -137,25 +160,36 @@
             </div>
             
             <div id="cheat-browser" class="cheat-sub-content active">
-                <div class="panel" style="border-color: var(--primary);">
-                    <h3 style="font-family:'Orbitron'; margin-bottom: 20px;">KOUR.IO INTERNAL</h3>
-                    
-                    <img src="https://i.postimg.cc/XNRC2Rvf/Capture.png" alt="NeuroHub Kour.io Cheat Menu" style="width: 100%; max-width: 400px; display: block; margin: 0 auto 20px auto; border-radius: 8px; border: 1px solid var(--border);">
-                    
-                    <p style="font-size:0.8rem; color:#666; text-align: center;">Aimbot, ESP, Radar, Triggerbot, and Custom Crosshair. (Tampermonkey required).</p>
-                    <a href="https://raw.githubusercontent.com/neuroswap/kour/main/kour_script.user.js" class="btn btn-secondary">INSTALL KOUR</a>
-                </div>
+                <div class="product-grid">
+                    <div class="cheat-card">
+                        <div>
+                            <h3 style="font-family:'Orbitron'; color:var(--primary); font-size:1rem;">KOUR.IO INTERNAL</h3>
+                            <p style="font-size:0.7rem; color:#555;">Advanced aimbot & visuals for Kour.</p>
+                        </div>
+                        <button class="btn" onclick="openProduct('KOUR.IO INTERNAL', 'https://i.postimg.cc/XNRC2Rvf/Capture.png', 'Full Aimbot, ESP, Radar, and Triggerbot. Requires Tampermonkey to run directly in browser.', 'https://raw.githubusercontent.com/neuroswap/kour/main/kour_script.user.js')">GET PRODUCT</button>
+                    </div>
 
-                <div class="panel">
-                    <h3>KRUNKER.IO ELITE</h3>
-                    <a href="https://www.tampermonkey.net/script_installation.php#url=https://github.com/neuroswap/vghveF/raw/refs/heads/main/KRUNKER.IO.USER.JS" class="btn">INSTALL KRUNKER</a>
+                    <div class="cheat-card">
+                        <div>
+                            <h3 style="font-family:'Orbitron'; font-size:1rem;">KRUNKER.IO ELITE</h3>
+                            <p style="font-size:0.7rem; color:#555;">Silent Aim & ESP module.</p>
+                        </div>
+                        <button class="btn" onclick="openProduct('KRUNKER.IO ELITE', 'https://img.icons8.com/ios-filled/100/00f2ff/skull.png', 'High performance Krunker internal script with advanced ESP features.', 'https://www.tampermonkey.net/script_installation.php#url=https://github.com/neuroswap/vghveF/raw/refs/heads/main/KRUNKER.IO.USER.JS')">GET PRODUCT</button>
+                    </div>
                 </div>
             </div>
+
             <div id="cheat-roblox" class="cheat-sub-content">
-                <div class="panel"><h3>XENO EXECUTOR</h3><a href="https://xeno.onl" class="btn">DOWNLOAD XENO</a></div>
+                <div class="product-grid">
+                    <div class="cheat-card">
+                        <div><h3 style="font-family:'Orbitron';">XENO EXECUTOR</h3><p style="font-size:0.7rem; color:#555;">Best free Windows executor.</p></div>
+                        <button class="btn" onclick="openProduct('XENO EXECUTOR', 'https://xeno.onl/logo.png', 'Powerful Level 7 executor for all Roblox experiences.', 'https://xeno.onl')">GET PRODUCT</button>
+                    </div>
+                </div>
             </div>
+
             <div id="cheat-cs2" class="cheat-sub-content">
-                <div class="panel"><h3>CS2 EXTERNAL</h3><p style="color:var(--secondary)">IN DEVELOPMENT</p></div>
+                <p style="color:var(--secondary); font-family:'Orbitron'; text-align:center;">MODULES LOADING... [0%]</p>
             </div>
         </div>
 
@@ -176,6 +210,17 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
     const OWNER_ID = "1486348575536582736"; 
+
+    function openProduct(title, img, desc, link) {
+        document.getElementById('m-title').innerText = title;
+        document.getElementById('m-img').src = img;
+        document.getElementById('m-desc').innerText = desc;
+        document.getElementById('m-link').href = link;
+        document.getElementById('m-link').innerText = "INSTALL " + title.split(' ')[0];
+        document.getElementById('product-modal').style.display = 'flex';
+    }
+
+    function closeProduct() { document.getElementById('product-modal').style.display = 'none'; }
 
     function checkTos() { if (localStorage.getItem('tos_accepted')) loginWithDiscord(); else document.getElementById('tos-overlay').style.display = 'flex'; }
     function acceptTos() { localStorage.setItem('tos_accepted', 'true'); document.getElementById('tos-overlay').style.display = 'none'; loginWithDiscord(); }
@@ -203,7 +248,7 @@
             const nick = localStorage.getItem('nNick');
             document.getElementById('pill-name').innerText = nick;
             document.getElementById('pill-img').src = localStorage.getItem('nPFP');
-            document.getElementById('welcome-area').innerHTML = `<img src="${localStorage.getItem('nPFP')}" style="width:140px; border-radius:50%; border:3px solid var(--primary); margin-bottom:40px;"><h1 style="font-family:'Orbitron'; letter-spacing: 8px; font-size:3.5rem;">WELCOME <span style="color:var(--primary);">${nick.toUpperCase()}</span></h1><h2 style="font-family:'Orbitron'; color:var(--secondary); letter-spacing:10px; font-size:1.2rem;">TO THE FUTURE OF CHEATING</h2>`;
+            document.getElementById('welcome-area').innerHTML = `<img src="${localStorage.getItem('nPFP')}" style="width:140px; border-radius:50%; border:3px solid var(--primary); margin-bottom:40px;"><h1 style="font-family:'Orbitron'; letter-spacing: 8px; font-size:3.5rem;">WELCOME <span style="color:var(--primary);">${nick.toUpperCase()}</span></h1><h2 style="font-family:'Orbitron'; color:var(--secondary); letter-spacing:10px; font-size:1.2rem;">TO THE FUTURE OF PERFORMANCE</h2>`;
             if (id === OWNER_ID) document.getElementById('admin-tab').style.display = 'flex';
         }
         initStars(); drawStars();
