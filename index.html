@@ -44,9 +44,17 @@
 
         .modal-img { width: 100%; border-radius: 12px; border: 1px solid var(--primary); box-shadow: 0 0 20px rgba(0, 242, 255, 0.1); }
         
+        /* REAL REVIEW STYLING */
         .review-section { flex-grow: 1; margin-top: 15px; overflow-y: auto; max-height: 250px; padding-right: 10px; }
-        .review-item { background: rgba(255,255,255,0.02); border: 1px solid #111; padding: 12px; border-radius: 10px; margin-bottom: 10px; font-size: 0.75rem; }
-        .stars { color: #ffd700; font-size: 0.7rem; margin-bottom: 5px; }
+        .review-item { background: rgba(255,255,255,0.02); border: 1px solid #111; padding: 12px; border-radius: 10px; margin-bottom: 10px; display: flex; gap: 12px; align-items: flex-start; }
+        .rev-pfp { width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--primary); }
+        .rev-content { flex: 1; }
+        .rev-user { font-size: 0.65rem; font-weight: bold; color: var(--primary); margin-bottom: 2px; }
+        .rev-text { font-size: 0.75rem; color: #eee; }
+        
+        .submit-review-box { margin-top: 15px; border-top: 1px solid #222; padding-top: 15px; }
+        .rev-input { background: #000; border: 1px solid #222; padding: 10px; color: #fff; width: 100%; border-radius: 5px; font-size: 0.75rem; resize: none; }
+        .rev-input:focus { border-color: var(--primary); outline: none; }
 
         .modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
 
@@ -56,11 +64,9 @@
         
         .nav-tab { padding: 14px; border-radius: 10px; cursor: pointer; font-family: 'Orbitron'; font-size: 0.65rem; color: #555; display: flex; align-items: center; gap: 12px; letter-spacing: 1px; }
         .nav-tab.active { color: var(--primary); background: rgba(0, 242, 255, 0.05); border: 1px solid var(--primary); }
-        .nav-tab.special { color: var(--secondary); border: 1px solid var(--secondary); margin-top: 10px; }
 
         .content-area { padding: 50px; overflow-y: auto; position: relative; height: 100vh; }
         .tab-content { display: none; animation: fadeIn 0.4s ease forwards; width: 100%; }
-        
         #dash.active { display: flex !important; align-items: center; justify-content: center; text-align: center; flex-direction: column; height: 100%; }
         .tab-content.active:not(#dash) { display: block !important; }
 
@@ -73,10 +79,7 @@
         .btn-discord { background: #5865F2; color: white; border-bottom: 3px solid #3b448b; }
         .btn-secondary { background: var(--secondary); color: white; }
         .btn-outline { background: transparent; color: #555; border: 1px solid #222; }
-        .btn-outline:hover { color: #fff; border-color: #444; }
         
-        .version-tag { position: fixed; bottom: 20px; right: 20px; font-family: 'Orbitron'; font-size: 0.6rem; color: #333; letter-spacing: 2px; }
-
         .user-pill { margin-top: auto; background: var(--glass); border: 1px solid var(--border); padding: 12px; border-radius: 15px; display: flex; align-items: center; gap: 12px; cursor: pointer; }
         .user-pill img { width: 35px; height: 35px; border-radius: 50%; border: 1px solid var(--primary); }
 
@@ -93,7 +96,6 @@
 <body>
 
 <canvas id="starfield"></canvas>
-<div class="version-tag">NEUROHUB V1.0.4-ELITE</div>
 
 <div id="product-modal">
     <div class="modal-box">
@@ -108,33 +110,25 @@
         <div class="modal-right">
             <h2 id="m-title" style="font-family:'Orbitron'; margin:0; color:var(--primary); font-size:1.4rem;">PRODUCT</h2>
             <div id="m-status" style="font-size:0.7rem; color:var(--secondary); margin-top:5px; font-family:'Orbitron';">STATUS: UNDETECTED</div>
-            
-            <p id="m-desc" style="font-size:0.8rem; color:#666; line-height:1.6; margin:20px 0;"></p>
+            <p id="m-desc" style="font-size:0.8rem; color:#666; margin:15px 0;"></p>
 
             <h4 style="font-family:'Orbitron'; font-size:0.65rem; color:#444; margin-bottom:10px; letter-spacing:1px;">USER REVIEWS</h4>
             <div id="review-container" class="review-section">
                 </div>
-        </div>
-    </div>
-</div>
 
-<div id="tos-overlay">
-    <div class="tos-box">
-        <h3 style="font-family:'Orbitron'; color:var(--secondary); margin:0;">LEGAL DISCLAIMER</h3>
-        <div class="tos-content">
-            <b style="color:#fff;">1. EDUCATIONAL USE ONLY</b><br>NeuroHub software is for research. We don't encourage breaking ToS.<br><br>
-            <b style="color:#fff;">2. NO LIABILITY</b><br>Zayden is NOT responsible for bans or hardware issues. Use at your own risk.<br><br>
-            <b style="color:#fff;">3. NO REFUNDS</b><br>Access provided as-is.
+            <div class="submit-review-box">
+                <textarea id="rev-input" class="rev-input" placeholder="Write a public review..." rows="2"></textarea>
+                <button class="btn btn-secondary" style="padding: 8px; font-size: 0.6rem; margin-top: 10px;" onclick="postReview()">POST REVIEW</button>
+            </div>
         </div>
-        <button class="btn btn-secondary" onclick="acceptTos()">I AGREE & CONTINUE</button>
     </div>
 </div>
 
 <div id="auth-gate">
     <div class="auth-box">
-        <img src="https://img.icons8.com/ios-filled/100/00f2ff/skull.png" style="width:80px; margin-bottom:20px; filter: drop-shadow(0 0 15px var(--primary));">
+        <img src="https://img.icons8.com/ios-filled/100/00f2ff/skull.png" style="width:80px; margin-bottom:20px;">
         <h2 style="font-family:'Orbitron'; color:var(--primary); letter-spacing:5px;">NEUROHUB</h2>
-        <button class="btn btn-discord" onclick="checkTos()">SIGN UP WITH DISCORD</button>
+        <button class="btn btn-discord" onclick="loginWithDiscord()">LOGIN WITH DISCORD</button>
     </div>
 </div>
 
@@ -144,9 +138,6 @@
         <div class="nav-tab active" onclick="showTab('dash', this)">DASHBOARD</div>
         <div class="nav-tab" onclick="showTab('opt', this)">OPTIMIZERS</div>
         <div class="nav-tab" onclick="showTab('cheats', this)">CHEATS</div>
-        <div class="nav-tab" onclick="showTab('info', this)">INFO</div>
-        <div id="admin-tab" class="nav-tab special" style="display:none;" onclick="showTab('admin', this)">OWNER PANEL</div>
-
         <div class="user-pill" onclick="logout()">
             <img id="pill-img" src="">
             <div>
@@ -162,8 +153,8 @@
         <div id="opt" class="tab-content">
             <h2 style="font-family:'Orbitron'; letter-spacing:2px; margin-bottom:20px;">SYSTEM OPTIMIZATION</h2>
             <div class="panel">
-                <h3 style="font-family:'Orbitron';">NEUROHUB ELITE V6 (PC)</h3>
-                <a href="https://cdn.discordapp.com/attachments/1220455589808308254/1224814986424320141/NeuroHub_Elite.exe" class="btn">DOWNLOAD PC UTILITY</a>
+                <h3 style="font-family:'Orbitron';">NEUROHUB ELITE V6</h3>
+                <a href="#" class="btn">DOWNLOAD</a>
             </div>
         </div>
 
@@ -171,34 +162,14 @@
             <h2 style="font-family:'Orbitron'; letter-spacing:2px; margin-bottom:20px;">GAME MODULES</h2>
             <div class="sub-nav">
                 <div class="sub-tab active" onclick="showSubTab('cheat-browser', this)">BROWSER</div>
-                <div class="sub-tab" onclick="showSubTab('cheat-roblox', this)">ROBLOX</div>
                 <div class="sub-tab" onclick="showSubTab('cheat-cs2', this)">CS2</div>
             </div>
             
             <div id="cheat-browser" class="cheat-sub-content active">
                 <div class="product-grid">
                     <div class="cheat-card">
-                        <div>
-                            <h3 style="font-family:'Orbitron'; color:var(--primary); font-size:1rem;">KOUR.IO INTERNAL</h3>
-                            <p style="font-size:0.7rem; color:#555;">Advanced aimbot & visuals.</p>
-                        </div>
-                        <button class="btn" onclick="openProduct('KOUR.IO INTERNAL', 'https://i.postimg.cc/XNRC2Rvf/Capture.png', 'The definitive internal script for Kour.io. Features include predictive aimbot, full box ESP, player radar, and instant triggerbot.', 'https://raw.githubusercontent.com/neuroswap/kour/main/kour_script.user.js', 'UNDETECTED', 'kour')">GET PRODUCT</button>
-                    </div>
-                    <div class="cheat-card">
-                        <div>
-                            <h3 style="font-family:'Orbitron'; font-size:1rem;">KRUNKER.IO ELITE</h3>
-                            <p style="font-size:0.7rem; color:#555;">Silent Aim & ESP module.</p>
-                        </div>
-                        <button class="btn" onclick="openProduct('KRUNKER.IO ELITE', 'https://img.icons8.com/ios-filled/100/00f2ff/skull.png', 'High performance Krunker internal script with advanced ESP features.', 'https://github.com/neuroswap/vghveF/raw/refs/heads/main/KRUNKER.IO.USER.JS', 'UNDETECTED', 'krunker')">GET PRODUCT</button>
-                    </div>
-                </div>
-            </div>
-
-            <div id="cheat-roblox" class="cheat-sub-content">
-                <div class="product-grid">
-                    <div class="cheat-card">
-                        <div><h3 style="font-family:'Orbitron';">XENO EXECUTOR</h3><p style="font-size:0.7rem; color:#555;">Level 7 Windows executor.</p></div>
-                        <button class="btn" onclick="openProduct('XENO EXECUTOR', 'https://xeno.onl/logo.png', 'The most stable free executor currently available for Windows users.', 'https://xeno.onl', 'UNDETECTED', 'xeno')">GET PRODUCT</button>
+                        <h3 style="font-family:'Orbitron'; color:var(--primary); font-size:1rem;">KOUR.IO INTERNAL</h3>
+                        <button class="btn" onclick="openProduct('KOUR.IO INTERNAL', 'https://i.postimg.cc/XNRC2Rvf/Capture.png', 'Advanced Aimbot & Visuals.', 'https://raw.githubusercontent.com/neuroswap/kour/main/kour_script.user.js', 'UNDETECTED', 'kour')">GET PRODUCT</button>
                     </div>
                 </div>
             </div>
@@ -206,24 +177,11 @@
             <div id="cheat-cs2" class="cheat-sub-content">
                 <div class="product-grid">
                     <div class="cheat-card">
-                        <div style="opacity:0.5;">
-                            <h3 style="font-family:'Orbitron'; color:var(--secondary); font-size:1rem;">NEURO-CS2 EXTERNAL</h3>
-                            <p style="font-size:0.7rem; color:#555;">VAC-Live Bypass & Kernel ESP.</p>
-                        </div>
-                        <button class="btn btn-secondary" onclick="openProduct('NEURO-CS2 EXTERNAL', 'https://img.icons8.com/ios-filled/100/ff007f/lock.png', 'This product is currently in private beta testing. Once the VAC-Live bypass is verified, it will be released to Elite users.', '#', 'LOCKED (UNDER DEVELOPMENT)', 'cs2')">GET PRODUCT</button>
+                        <h3 style="font-family:'Orbitron'; color:var(--secondary); font-size:1rem;">CS2 EXTERNAL</h3>
+                        <button class="btn btn-secondary" onclick="openProduct('CS2 EXTERNAL', 'https://img.icons8.com/ios-filled/100/ff007f/lock.png', 'Product Locked.', '#', 'LOCKED (UNDER DEVELOPMENT)', 'cs2')">GET PRODUCT</button>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <div id="info" class="tab-content">
-            <h2 style="font-family:'Orbitron';">PROJECT INFO</h2>
-            <div class="panel"><p><b>Status:</b> Undetected</p><p><b>Dev:</b> Zayden</p></div>
-        </div>
-
-        <div id="admin" class="tab-content">
-            <h2 style="font-family:'Orbitron'; color:var(--secondary);">OWNER PANEL</h2>
-            <div class="panel"><p>Welcome, Zayden.</p></div>
         </div>
     </div>
 </div>
@@ -232,70 +190,67 @@
     const firebaseConfig = { apiKey: "AIzaSyC-tWfooosC689hzDUC4S5CXL7dJ3yANuc", authDomain: "neuro-chat-8fe18.firebaseapp.com", databaseURL: "https://neuro-chat-8fe18-default-rtdb.firebaseio.com", projectId: "neuro-chat-8fe18", storageBucket: "neuro-chat-8fe18.firebasestorage.app", messagingSenderId: "490069277437", appId: "1:490069277437:web:c17aaa860bf4ecfd7b1c94" };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
-    const OWNER_ID = "1486348575536582736"; 
-
-    // REAL REVIEW DATA OBJECT
-    const reviewsData = {
-        kour: [
-            { user: "Ghost_User22", text: "Actual beast of a script, visuals are clean.", stars: 5 },
-            { user: "EliteViper", text: "Undetected for 2 weeks now. Zayden cooked.", stars: 5 }
-        ],
-        krunker: [
-            { user: "ShottyMain", text: "Best silent aim on the market. Highly recommend.", stars: 4 },
-            { user: "ZeroGravity", text: "Smooth movement and no lag.", stars: 5 }
-        ],
-        xeno: [
-            { user: "RobloxDev", text: "Stable execution, runs almost every script.", stars: 5 }
-        ],
-        cs2: [
-            { user: "System", text: "PRODUCT LOCKED - ACCESS RESTRICTED TO DEVELOPERS.", stars: 0 }
-        ]
-    };
+    let currentProductID = null;
 
     function openProduct(title, img, desc, link, status, id) {
+        currentProductID = id;
         document.getElementById('m-title').innerText = title;
         document.getElementById('m-img').src = img;
         document.getElementById('m-desc').innerText = desc;
         document.getElementById('m-status').innerText = "STATUS: " + status;
         
         const installBtn = document.getElementById('m-link');
-        
-        // Handle Locked State
         if(status.includes("LOCKED")) {
-            installBtn.innerText = "PRODUCT LOCKED";
-            installBtn.style.background = "#222";
-            installBtn.style.color = "#444";
-            installBtn.onclick = (e) => { e.preventDefault(); alert("PRODUCT UNDER DEVELOPMENT"); };
+            installBtn.innerText = "LOCKED";
+            installBtn.style.opacity = "0.3";
+            installBtn.href = "#";
         } else {
             installBtn.innerText = "INSTALL NOW";
-            installBtn.style.background = "var(--primary)";
-            installBtn.style.color = "#000";
+            installBtn.style.opacity = "1";
             installBtn.href = link;
-            installBtn.onclick = null;
         }
 
-        // Injects specific reviews
-        const container = document.getElementById('review-container');
-        container.innerHTML = "";
-        const reviews = reviewsData[id] || [];
-        reviews.forEach(r => {
-            const starText = "★".repeat(r.stars) + "☆".repeat(5 - r.stars);
-            container.innerHTML += `
-                <div class="review-item">
-                    <div class="stars">${starText}</div>
-                    <div style="color:#eee; margin-bottom:4px;">"${r.text}"</div>
-                    <div style="color:#444; font-size:0.6rem;">— ${r.user}</div>
-                </div>
-            `;
+        // Load Real Reviews from Firebase
+        db.ref('reviews/' + id).on('value', (snap) => {
+            const container = document.getElementById('review-container');
+            container.innerHTML = "";
+            const data = snap.val();
+            if(data) {
+                Object.values(data).reverse().forEach(r => {
+                    container.innerHTML += `
+                        <div class="review-item">
+                            <img src="${r.pfp}" class="rev-pfp">
+                            <div class="rev-content">
+                                <div class="rev-user">${r.name}</div>
+                                <div class="rev-text">${r.text}</div>
+                            </div>
+                        </div>`;
+                });
+            } else {
+                container.innerHTML = "<p style='color:#333; font-size:0.7rem;'>No reviews yet.</p>";
+            }
         });
 
         document.getElementById('product-modal').style.display = 'flex';
     }
 
+    function postReview() {
+        const text = document.getElementById('rev-input').value;
+        if(!text) return;
+        const name = localStorage.getItem('nNick');
+        const pfp = localStorage.getItem('nPFP');
+        
+        db.ref('reviews/' + currentProductID).push({
+            name: name,
+            pfp: pfp,
+            text: text,
+            time: Date.now()
+        });
+        document.getElementById('rev-input').value = "";
+    }
+
     function closeProduct() { document.getElementById('product-modal').style.display = 'none'; }
-    function checkTos() { if (localStorage.getItem('tos_accepted')) loginWithDiscord(); else document.getElementById('tos-overlay').style.display = 'flex'; }
-    function acceptTos() { localStorage.setItem('tos_accepted', 'true'); document.getElementById('tos-overlay').style.display = 'none'; loginWithDiscord(); }
-    function loginWithDiscord() { const clientID = "1494822241089880205"; const currentPath = window.location.origin + window.location.pathname; const redirect = encodeURIComponent(currentPath); const url = `https://discord.com/api/oauth2/authorize?client_id=${clientID}&redirect_uri=${redirect}&response_type=token&scope=identify%20guilds.join`; window.location.href = url; }
+    function loginWithDiscord() { const clientID = "1494822241089880205"; const redirect = encodeURIComponent(window.location.origin + window.location.pathname); window.location.href = `https://discord.com/api/oauth2/authorize?client_id=${clientID}&redirect_uri=${redirect}&response_type=token&scope=identify`; }
 
     window.onload = async () => {
         const fragment = new URLSearchParams(window.location.hash.slice(1));
@@ -303,24 +258,16 @@
         if (accessToken) {
             const resp = await fetch('https://discord.com/api/users/@me', { headers: { Authorization: `Bearer ${accessToken}` } });
             const user = await resp.json();
-            if (user.id) {
-                const nick = user.global_name || user.username;
-                localStorage.setItem('nID', user.id);
-                localStorage.setItem('nNick', nick);
-                localStorage.setItem('nPFP', `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`);
-                db.ref('logins/' + user.id).set({ id: user.id, username: user.username, nickname: nick, time: Date.now() });
-                window.history.replaceState({}, document.title, window.location.pathname);
-            }
+            localStorage.setItem('nNick', user.global_name || user.username);
+            localStorage.setItem('nPFP', `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`);
+            window.history.replaceState({}, document.title, window.location.pathname);
         }
-        const id = localStorage.getItem('nID');
-        if (id) {
+        if (localStorage.getItem('nNick')) {
             document.getElementById('auth-gate').style.display = 'none';
             document.getElementById('main-ui').style.display = 'grid';
-            const nick = localStorage.getItem('nNick');
-            document.getElementById('pill-name').innerText = nick;
+            document.getElementById('pill-name').innerText = localStorage.getItem('nNick');
             document.getElementById('pill-img').src = localStorage.getItem('nPFP');
-            document.getElementById('welcome-area').innerHTML = `<img src="${localStorage.getItem('nPFP')}" style="width:140px; border-radius:50%; border:3px solid var(--primary); margin-bottom:40px;"><h1 style="font-family:'Orbitron'; letter-spacing: 8px; font-size:3.5rem;">WELCOME <span style="color:var(--primary);">${nick.toUpperCase()}</span></h1><h2 style="font-family:'Orbitron'; color:var(--secondary); letter-spacing:10px; font-size:1.2rem;">TO THE NEUROHUB ECOSYSTEM</h2>`;
-            if (id === OWNER_ID) document.getElementById('admin-tab').style.display = 'flex';
+            document.getElementById('welcome-area').innerHTML = `<h1 style="font-family:'Orbitron';">WELCOME ${localStorage.getItem('nNick').toUpperCase()}</h1>`;
         }
         initStars(); drawStars();
     };
@@ -331,18 +278,16 @@
         document.querySelectorAll('.nav-tab').forEach(n => n.classList.remove('active'));
         el.classList.add('active');
     }
-
     function showSubTab(t, el) {
         document.querySelectorAll('.cheat-sub-content').forEach(c => c.classList.remove('active'));
         document.getElementById(t).classList.add('active');
         document.querySelectorAll('.sub-tab').forEach(n => n.classList.remove('active'));
         el.classList.add('active');
     }
-
     function logout() { localStorage.clear(); location.reload(); }
     const canvas = document.getElementById('starfield'); const ctx = canvas.getContext('2d'); let stars = [];
-    function initStars() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; stars = []; for(let i=0; i<80; i++) stars.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, l:Math.random()*25+10, s:Math.random()*12+5}); }
-    function drawStars() { ctx.clearRect(0,0,canvas.width, canvas.height); stars.forEach(s => { ctx.strokeStyle = "#00f2ff"; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(s.x, s.y); ctx.lineTo(s.x, s.y+s.l); ctx.stroke(); s.y += s.s; if(s.y > canvas.height) s.y = -s.l; }); requestAnimationFrame(drawStars); }
+    function initStars() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; for(let i=0; i<80; i++) stars.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, l:Math.random()*25+10, s:Math.random()*12+5}); }
+    function drawStars() { ctx.clearRect(0,0,canvas.width, canvas.height); stars.forEach(s => { ctx.strokeStyle = "#00f2ff"; ctx.beginPath(); ctx.moveTo(s.x, s.y); ctx.lineTo(s.x, s.y+s.l); ctx.stroke(); s.y += s.s; if(s.y > canvas.height) s.y = -s.l; }); requestAnimationFrame(drawStars); }
 </script>
 </body>
 </html>
