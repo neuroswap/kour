@@ -35,18 +35,19 @@
         #auth-gate { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; align-items: center; justify-content: center; }
         .auth-box { background: #080808; border: 2px solid var(--primary); padding: 50px; border-radius: 30px; width: 420px; text-align: center; box-shadow: 0 0 50px rgba(0, 242, 255, 0.1); }
 
-        /* PRODUCT MODAL */
+        /* PROFESSIONAL PRODUCT MODAL */
         #product-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 30000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(25px); }
         .modal-box { background: #070707; border: 1px solid var(--border); width: 95%; max-width: 900px; border-radius: 25px; display: grid; grid-template-columns: 1fr 1fr; gap: 30px; padding: 40px; position: relative; animation: modalIn 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); box-shadow: 0 0 80px rgba(0, 0, 0, 0.5); }
+        
         .modal-left { display: flex; flex-direction: column; gap: 15px; }
         .modal-right { display: flex; flex-direction: column; border-left: 1px solid #222; padding-left: 30px; }
-        .modal-img { width: 100%; border-radius: 12px; border: 1px solid var(--primary); }
+        .modal-img { width: 100%; border-radius: 12px; border: 1px solid var(--primary); box-shadow: 0 0 20px rgba(0, 242, 255, 0.1); }
         
-        /* REAL REVIEWS */
-        .review-section { flex-grow: 1; margin-top: 15px; overflow-y: auto; max-height: 200px; padding-right: 10px; }
-        .review-item { background: rgba(255,255,255,0.02); border: 1px solid #111; padding: 10px; border-radius: 10px; margin-bottom: 10px; display: flex; gap: 10px; align-items: flex-start; }
+        /* REAL REVIEWS STYLING */
+        .review-section { flex-grow: 1; margin-top: 15px; overflow-y: auto; max-height: 180px; padding-right: 10px; }
+        .review-item { background: rgba(255,255,255,0.02); border: 1px solid #111; padding: 12px; border-radius: 10px; margin-bottom: 10px; display: flex; gap: 10px; align-items: flex-start; }
         .rev-pfp { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--primary); }
-        .rev-user { font-size: 0.65rem; font-weight: bold; color: var(--primary); }
+        .rev-user { font-size: 0.65rem; font-weight: bold; color: var(--primary); margin-bottom: 2px; }
         .rev-text { font-size: 0.75rem; color: #eee; }
         
         .rev-input-area { margin-top: 15px; border-top: 1px solid #222; padding-top: 15px; }
@@ -61,7 +62,7 @@
         .nav-tab.active { color: var(--primary); background: rgba(0, 242, 255, 0.05); border: 1px solid var(--primary); }
         .nav-tab.special { color: var(--secondary); border: 1px solid var(--secondary); margin-top: 10px; }
 
-        .content-area { padding: 50px; overflow-y: auto; height: 100vh; }
+        .content-area { padding: 50px; overflow-y: auto; position: relative; height: 100vh; }
         .tab-content { display: none; animation: fadeIn 0.4s ease forwards; width: 100%; }
         #dash.active { display: flex !important; align-items: center; justify-content: center; text-align: center; flex-direction: column; height: 100%; }
         .tab-content.active:not(#dash) { display: block !important; }
@@ -75,7 +76,8 @@
         .btn-discord { background: #5865F2; color: white; border-bottom: 3px solid #3b448b; }
         .btn-secondary { background: var(--secondary); color: white; }
         .btn-outline { background: transparent; color: #555; border: 1px solid #222; }
-
+        
+        .version-tag { position: fixed; bottom: 20px; right: 20px; font-family: 'Orbitron'; font-size: 0.6rem; color: #333; letter-spacing: 2px; }
         .user-pill { margin-top: auto; background: var(--glass); border: 1px solid var(--border); padding: 12px; border-radius: 15px; display: flex; align-items: center; gap: 12px; cursor: pointer; }
         .user-pill img { width: 35px; height: 35px; border-radius: 50%; border: 1px solid var(--primary); }
 
@@ -92,6 +94,7 @@
 <body>
 
 <canvas id="starfield"></canvas>
+<div class="version-tag">NEUROHUB V1.0.4-ELITE</div>
 
 <div id="product-modal">
     <div class="modal-box">
@@ -102,13 +105,14 @@
                 <a id="m-link" href="#" class="btn">INSTALL NOW</a>
             </div>
         </div>
+
         <div class="modal-right">
             <h2 id="m-title" style="font-family:'Orbitron'; margin:0; color:var(--primary); font-size:1.4rem;">PRODUCT</h2>
             <div id="m-status" style="font-size:0.7rem; color:var(--secondary); margin-top:5px; font-family:'Orbitron';">STATUS: UNDETECTED</div>
-            <p id="m-desc" style="font-size:0.8rem; color:#666; line-height:1.6; margin:15px 0;"></p>
+            <p id="m-desc" style="font-size:0.8rem; color:#666; line-height:1.6; margin:20px 0;"></p>
 
             <h4 style="font-family:'Orbitron'; font-size:0.65rem; color:#444; margin-bottom:10px; letter-spacing:1px;">USER REVIEWS</h4>
-            <div id="rev-container" class="review-section"></div>
+            <div id="review-container" class="review-section"></div>
 
             <div class="rev-input-area">
                 <textarea id="rev-input" class="rev-input" placeholder="Drop a review..." rows="2"></textarea>
@@ -122,9 +126,9 @@
     <div class="tos-box">
         <h3 style="font-family:'Orbitron'; color:var(--secondary); margin:0;">LEGAL DISCLAIMER</h3>
         <div class="tos-content">
-            <b>1. EDUCATIONAL USE ONLY</b><br>NeuroHub software is for research purposes only.<br><br>
-            <b>2. NO LIABILITY</b><br>Zayden is NOT responsible for bans or hardware issues.<br><br>
-            <b>3. NO REFUNDS</b><br>Access provided as-is.
+            <b style="color:#fff;">1. EDUCATIONAL USE ONLY</b><br>NeuroHub software is for research. We don't encourage breaking ToS.<br><br>
+            <b style="color:#fff;">2. NO LIABILITY</b><br>Zayden is NOT responsible for bans or hardware issues. Use at your own risk.<br><br>
+            <b style="color:#fff;">3. NO REFUNDS</b><br>Access provided as-is.
         </div>
         <button class="btn btn-secondary" onclick="acceptTos()">I AGREE & CONTINUE</button>
     </div>
@@ -132,7 +136,7 @@
 
 <div id="auth-gate">
     <div class="auth-box">
-        <img src="https://img.icons8.com/ios-filled/100/00f2ff/skull.png" style="width:80px; margin-bottom:20px;">
+        <img src="https://img.icons8.com/ios-filled/100/00f2ff/skull.png" style="width:80px; margin-bottom:20px; filter: drop-shadow(0 0 15px var(--primary));">
         <h2 style="font-family:'Orbitron'; color:var(--primary); letter-spacing:5px;">NEUROHUB</h2>
         <button class="btn btn-discord" onclick="checkTos()">SIGN UP WITH DISCORD</button>
     </div>
@@ -171,14 +175,34 @@
             <h2 style="font-family:'Orbitron'; letter-spacing:2px; margin-bottom:20px;">GAME MODULES</h2>
             <div class="sub-nav">
                 <div class="sub-tab active" onclick="showSubTab('cheat-browser', this)">BROWSER</div>
+                <div class="sub-tab" onclick="showSubTab('cheat-roblox', this)">ROBLOX</div>
                 <div class="sub-tab" onclick="showSubTab('cheat-cs2', this)">CS2</div>
             </div>
             
             <div id="cheat-browser" class="cheat-sub-content active">
                 <div class="product-grid">
                     <div class="cheat-card">
-                        <h3 style="font-family:'Orbitron'; color:var(--primary); font-size:1rem;">KOUR.IO INTERNAL</h3>
-                        <button class="btn" onclick="openProduct('KOUR.IO INTERNAL', 'https://i.postimg.cc/XNRC2Rvf/Capture.png', 'Predictive aimbot and full box ESP.', 'https://raw.githubusercontent.com/neuroswap/kour/main/kour_script.user.js', 'UNDETECTED', 'kour')">GET PRODUCT</button>
+                        <div>
+                            <h3 style="font-family:'Orbitron'; color:var(--primary); font-size:1rem;">KOUR.IO INTERNAL</h3>
+                            <p style="font-size:0.7rem; color:#555;">Advanced aimbot & visuals.</p>
+                        </div>
+                        <button class="btn" onclick="openProduct('KOUR.IO INTERNAL', 'https://i.postimg.cc/XNRC2Rvf/Capture.png', 'Predictive aimbot, ESP, and triggerbot.', 'https://raw.githubusercontent.com/neuroswap/kour/main/kour_script.user.js', 'UNDETECTED', 'kour')">GET PRODUCT</button>
+                    </div>
+                    <div class="cheat-card">
+                        <div>
+                            <h3 style="font-family:'Orbitron'; font-size:1rem;">KRUNKER.IO ELITE</h3>
+                            <p style="font-size:0.7rem; color:#555;">Silent Aim & ESP module.</p>
+                        </div>
+                        <button class="btn" onclick="openProduct('KRUNKER.IO ELITE', 'https://img.icons8.com/ios-filled/100/00f2ff/skull.png', 'High performance Krunker internal script.', 'https://github.com/neuroswap/vghveF/raw/refs/heads/main/KRUNKER.IO.USER.JS', 'UNDETECTED', 'krunker')">GET PRODUCT</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="cheat-roblox" class="cheat-sub-content">
+                <div class="product-grid">
+                    <div class="cheat-card">
+                        <div><h3 style="font-family:'Orbitron';">XENO EXECUTOR</h3><p style="font-size:0.7rem; color:#555;">Level 7 Windows executor.</p></div>
+                        <button class="btn" onclick="openProduct('XENO EXECUTOR', 'https://xeno.onl/logo.png', 'Stable free executor for Windows.', 'https://xeno.onl', 'UNDETECTED', 'xeno')">GET PRODUCT</button>
                     </div>
                 </div>
             </div>
@@ -186,21 +210,24 @@
             <div id="cheat-cs2" class="cheat-sub-content">
                 <div class="product-grid">
                     <div class="cheat-card">
-                        <h3 style="font-family:'Orbitron'; color:var(--secondary); font-size:1rem;">NEURO-CS2</h3>
-                        <button class="btn btn-secondary" onclick="openProduct('NEURO-CS2', 'https://img.icons8.com/ios-filled/100/ff007f/lock.png', 'Product in private beta testing.', '#', 'LOCKED (UNDER DEVELOPMENT)', 'cs2')">GET PRODUCT</button>
+                        <div style="opacity:0.5;">
+                            <h3 style="font-family:'Orbitron'; color:var(--secondary); font-size:1rem;">NEURO-CS2 EXTERNAL</h3>
+                            <p style="font-size:0.7rem; color:#555;">VAC-Live Bypass & ESP.</p>
+                        </div>
+                        <button class="btn btn-secondary" onclick="openProduct('NEURO-CS2 EXTERNAL', 'https://img.icons8.com/ios-filled/100/ff007f/lock.png', 'Under development.', '#', 'LOCKED (BETA)', 'cs2')">GET PRODUCT</button>
                     </div>
                 </div>
             </div>
         </div>
 
         <div id="info" class="tab-content">
-            <h2 style="font-family:'Orbitron';">INFO</h2>
-            <div class="panel"><p>Dev: Zayden</p></div>
+            <h2 style="font-family:'Orbitron';">PROJECT INFO</h2>
+            <div class="panel"><p><b>Dev:</b> Zayden</p></div>
         </div>
 
         <div id="admin" class="tab-content">
-            <h2 style="font-family:'Orbitron'; color:var(--secondary);">OWNER</h2>
-            <div class="panel">Admin access confirmed.</div>
+            <h2 style="font-family:'Orbitron'; color:var(--secondary);">OWNER PANEL</h2>
+            <div class="panel"><p>Welcome, Zayden.</p></div>
         </div>
     </div>
 </div>
@@ -209,6 +236,7 @@
     const firebaseConfig = { apiKey: "AIzaSyC-tWfooosC689hzDUC4S5CXL7dJ3yANuc", authDomain: "neuro-chat-8fe18.firebaseapp.com", databaseURL: "https://neuro-chat-8fe18-default-rtdb.firebaseio.com", projectId: "neuro-chat-8fe18", storageBucket: "neuro-chat-8fe18.firebasestorage.app", messagingSenderId: "490069277437", appId: "1:490069277437:web:c17aaa860bf4ecfd7b1c94" };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
+    const OWNER_ID = "1486348575536582736"; 
     let currentPID = null;
 
     function openProduct(title, img, desc, link, status, id) {
@@ -219,60 +247,83 @@
         document.getElementById('m-status').innerText = "STATUS: " + status;
         
         const installBtn = document.getElementById('m-link');
-        if(status.includes("LOCKED")) { installBtn.innerText = "LOCKED"; installBtn.style.opacity = "0.3"; installBtn.href = "#"; }
-        else { installBtn.innerText = "INSTALL NOW"; installBtn.style.opacity = "1"; installBtn.href = link; }
+        if(status.includes("LOCKED")) {
+            installBtn.innerText = "LOCKED"; installBtn.style.background = "#222"; installBtn.href = "#";
+        } else {
+            installBtn.innerText = "INSTALL NOW"; installBtn.style.background = "var(--primary)"; installBtn.href = link;
+        }
 
+        // Real-time Database Reviews
         db.ref('reviews/' + id).on('value', (snap) => {
-            const cont = document.getElementById('rev-container'); cont.innerHTML = "";
+            const cont = document.getElementById('review-container'); cont.innerHTML = "";
             const data = snap.val();
             if(data) Object.values(data).reverse().forEach(r => {
                 cont.innerHTML += `<div class="review-item"><img src="${r.pfp}" class="rev-pfp"><div><div class="rev-user">${r.name}</div><div class="rev-text">${r.text}</div></div></div>`;
             });
             else cont.innerHTML = "<p style='color:#333; font-size:0.7rem;'>No reviews yet.</p>";
         });
+
         document.getElementById('product-modal').style.display = 'flex';
     }
 
     function postReview() {
-        const text = document.getElementById('rev-input').value; if(!text) return;
-        db.ref('reviews/' + currentPID).push({ name: localStorage.getItem('nNick'), pfp: localStorage.getItem('nPFP'), text: text, time: Date.now() });
+        const text = document.getElementById('rev-input').value;
+        if(!text) return;
+        db.ref('reviews/' + currentPID).push({
+            name: localStorage.getItem('nNick'),
+            pfp: localStorage.getItem('nPFP'),
+            text: text,
+            time: Date.now()
+        });
         document.getElementById('rev-input').value = "";
     }
 
     function closeProduct() { document.getElementById('product-modal').style.display = 'none'; }
-    function checkTos() { if(localStorage.getItem('tos_accepted')) loginWithDiscord(); else document.getElementById('tos-overlay').style.display = 'flex'; }
+    function checkTos() { if (localStorage.getItem('tos_accepted')) loginWithDiscord(); else document.getElementById('tos-overlay').style.display = 'flex'; }
     function acceptTos() { localStorage.setItem('tos_accepted', 'true'); document.getElementById('tos-overlay').style.display = 'none'; loginWithDiscord(); }
     function loginWithDiscord() { const cid = "1494822241089880205"; const red = encodeURIComponent(window.location.origin + window.location.pathname); window.location.href = `https://discord.com/api/oauth2/authorize?client_id=${cid}&redirect_uri=${red}&response_type=token&scope=identify`; }
 
     window.onload = async () => {
         const frag = new URLSearchParams(window.location.hash.slice(1));
-        if(frag.get('access_token')) {
+        if (frag.get('access_token')) {
             const resp = await fetch('https://discord.com/api/users/@me', { headers: { Authorization: `Bearer ${frag.get('access_token')}` } });
             const user = await resp.json();
-            localStorage.setItem('nNick', user.global_name || user.username);
-            localStorage.setItem('nPFP', `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`);
-            window.history.replaceState({}, "", window.location.pathname);
+            if (user.id) {
+                localStorage.setItem('nID', user.id);
+                localStorage.setItem('nNick', user.global_name || user.username);
+                localStorage.setItem('nPFP', `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`);
+                window.history.replaceState({}, "", window.location.pathname);
+            }
         }
-        if(localStorage.getItem('nNick')) {
-            document.getElementById('auth-gate').style.display = 'none'; document.getElementById('main-ui').style.display = 'grid';
-            document.getElementById('pill-name').innerText = localStorage.getItem('nNick'); document.getElementById('pill-img').src = localStorage.getItem('nPFP');
-            document.getElementById('welcome-area').innerHTML = `<h1 style="font-family:'Orbitron';">WELCOME ${localStorage.getItem('nNick').toUpperCase()}</h1>`;
+        const id = localStorage.getItem('nID');
+        if (id) {
+            document.getElementById('auth-gate').style.display = 'none';
+            document.getElementById('main-ui').style.display = 'grid';
+            const nick = localStorage.getItem('nNick');
+            document.getElementById('pill-name').innerText = nick;
+            document.getElementById('pill-img').src = localStorage.getItem('nPFP');
+            document.getElementById('welcome-area').innerHTML = `<img src="${localStorage.getItem('nPFP')}" style="width:140px; border-radius:50%; border:3px solid var(--primary); margin-bottom:40px;"><h1 style="font-family:'Orbitron'; letter-spacing: 8px; font-size:3.5rem;">WELCOME <span style="color:var(--primary);">${nick.toUpperCase()}</span></h1><h2 style="font-family:'Orbitron'; color:var(--secondary); letter-spacing:10px; font-size:1.2rem;">TO THE NEUROHUB ECOSYSTEM</h2>`;
+            if (id === OWNER_ID) document.getElementById('admin-tab').style.display = 'flex';
         }
         initStars(); drawStars();
     };
 
     function showTab(t, el) { 
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active')); document.getElementById(t).classList.add('active');
-        document.querySelectorAll('.nav-tab').forEach(n => n.classList.remove('active')); el.classList.add('active');
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        document.getElementById(t).classList.add('active');
+        document.querySelectorAll('.nav-tab').forEach(n => n.classList.remove('active'));
+        el.classList.add('active');
     }
     function showSubTab(t, el) {
-        document.querySelectorAll('.cheat-sub-content').forEach(c => c.classList.remove('active')); document.getElementById(t).classList.add('active');
-        document.querySelectorAll('.sub-tab').forEach(n => n.classList.remove('active')); el.classList.add('active');
+        document.querySelectorAll('.cheat-sub-content').forEach(c => c.classList.remove('active'));
+        document.getElementById(t).classList.add('active');
+        document.querySelectorAll('.sub-tab').forEach(n => n.classList.remove('active'));
+        el.classList.add('active');
     }
     function logout() { localStorage.clear(); location.reload(); }
     const canvas = document.getElementById('starfield'); const ctx = canvas.getContext('2d'); let stars = [];
     function initStars() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; for(let i=0; i<80; i++) stars.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, l:Math.random()*25+10, s:Math.random()*12+5}); }
-    function drawStars() { ctx.clearRect(0,0,canvas.width, canvas.height); stars.forEach(s => { ctx.strokeStyle = "#00f2ff"; ctx.beginPath(); ctx.moveTo(s.x, s.y); ctx.lineTo(s.x, s.y+s.l); ctx.stroke(); s.y += s.s; if(s.y > canvas.height) s.y = -s.l; }); requestAnimationFrame(drawStars); }
+    function drawStars() { ctx.clearRect(0,0,canvas.width, canvas.height); stars.forEach(s => { ctx.strokeStyle = "#00f2ff"; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(s.x, s.y); ctx.lineTo(s.x, s.y+s.l); ctx.stroke(); s.y += s.s; if(s.y > canvas.height) s.y = -s.l; }); requestAnimationFrame(drawStars); }
 </script>
 </body>
 </html>
